@@ -1,0 +1,7 @@
+{
+  "task": "Launch an AI product operations workflow and purchase the software, data, and cloud resources needed to execute it inside a 220 USD budget with approval above 60 USD.",
+  "maxBudget": "220.00",
+  "currency": "USD",
+  "policyText": "Allow software, data, and compute purchases up to 220 USD. Require approval above 60 USD.",
+  "modeHint": "orchestration"
+}

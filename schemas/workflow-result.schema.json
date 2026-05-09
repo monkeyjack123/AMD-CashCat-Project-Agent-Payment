@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workflow Result",
+  "type": "object",
+  "required": ["artifactType", "artifactId", "title", "generatedAt", "summary"],
+  "properties": {
+    "artifactType": {
+      "type": "string",
+      "enum": ["research_brief", "benchmark_result", "operations_bundle", "portfolio_run"]
+    },
+    "artifactId": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "generatedAt": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

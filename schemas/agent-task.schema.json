@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Agent Task",
+  "type": "object",
+  "required": ["task", "maxBudget", "currency"],
+  "properties": {
+    "task": {
+      "type": "string",
+      "description": "Natural-language objective given to the AI agent."
+    },
+    "maxBudget": {
+      "type": "string",
+      "description": "Upper budget boundary for the governed run."
+    },
+    "currency": {
+      "type": "string",
+      "enum": ["USD"]
+    },
+    "policyText": {
+      "type": "string",
+      "description": "Natural-language spend controls."
+    },
+    "modeHint": {
+      "type": "string",
+      "enum": ["single", "orchestration"]
+    }
+  },
+  "additionalProperties": false
+}

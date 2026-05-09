@@ -1,0 +1,11 @@
+{
+  "model": "qwen2.5-14b",
+  "provider": "amd-vllm",
+  "purchaseRequired": true,
+  "amount": "72.00",
+  "category": "software",
+  "purpose": "Acquire an operational software bundle to execute the launch workflow with bounded budget and approvals.",
+  "vendor": "workflow_ops_stack",
+  "confidence": 0.89,
+  "reasoning": "The task spans multiple operational resources, so the AI proposes a software-led spend package as the first governed step."
+}

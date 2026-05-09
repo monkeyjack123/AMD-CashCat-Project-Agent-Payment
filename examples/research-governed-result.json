@@ -1,0 +1,29 @@
+{
+  "compiledPolicy": {
+    "normalizedRules": {
+      "allowedCategories": ["data"],
+      "limits": {
+        "perTransaction": "40.00"
+      },
+      "approvalRules": {
+        "requiresHumanApprovalOver": "25.00"
+      }
+    }
+  },
+  "paymentIntent": {
+    "id": "pi_research_0001",
+    "amount": "18.50",
+    "currency": "USD",
+    "category": "data",
+    "status": "approved"
+  },
+  "spendProof": {
+    "proofId": "sproof_research_0001",
+    "decisionSummary": "CashCat approved the research purchase inside budget and category controls."
+  },
+  "executionReceipt": {
+    "receiptId": "rcpt_research_0001",
+    "status": "approved",
+    "settled": true
+  }
+}

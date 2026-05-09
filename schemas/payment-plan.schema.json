@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Payment Plan",
+  "type": "object",
+  "required": ["model", "provider", "purchaseRequired", "amount", "category", "purpose", "vendor", "confidence", "reasoning"],
+  "properties": {
+    "model": {
+      "type": "string"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "purchaseRequired": {
+      "type": "boolean"
+    },
+    "amount": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["api", "data", "software", "compute", "cloud"]
+    },
+    "purpose": {
+      "type": "string"
+    },
+    "vendor": {
+      "type": "string"
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "reasoning": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

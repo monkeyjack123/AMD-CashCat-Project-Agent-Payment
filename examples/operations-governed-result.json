@@ -1,0 +1,30 @@
+{
+  "coordinator": {
+    "coordinatorAgentId": "ag_cashcat_orchestrator",
+    "delegatedAgents": 3,
+    "totalBudget": "220.00",
+    "approvalThreshold": "60.00",
+    "currency": "USD"
+  },
+  "fundingPlan": {
+    "requestedTotal": "148.00",
+    "status": "portfolio_needs_review"
+  },
+  "agentRuns": [
+    {
+      "role": "Market Intelligence Agent",
+      "assignedBudget": "79.20",
+      "category": "data"
+    },
+    {
+      "role": "Tooling Procurement Agent",
+      "assignedBudget": "63.80",
+      "category": "software"
+    },
+    {
+      "role": "Compute Operations Agent",
+      "assignedBudget": "77.00",
+      "category": "compute"
+    }
+  ]
+}

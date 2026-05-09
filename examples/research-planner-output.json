@@ -1,0 +1,11 @@
+{
+  "model": "qwen2.5-14b",
+  "provider": "amd-vllm",
+  "purchaseRequired": true,
+  "amount": "18.50",
+  "category": "data",
+  "purpose": "Acquire premium market intelligence signals for the research workflow.",
+  "vendor": "premium_market_signal",
+  "confidence": 0.93,
+  "reasoning": "The task requires higher-quality market data than free sources can provide, so a bounded premium research purchase is justified."
+}

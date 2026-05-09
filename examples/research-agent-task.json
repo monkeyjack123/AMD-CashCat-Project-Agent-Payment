@@ -1,0 +1,7 @@
+{
+  "task": "Research the AI agent payments market and acquire the premium data needed to produce a stronger competitive brief within a 40 USD budget.",
+  "maxBudget": "40.00",
+  "currency": "USD",
+  "policyText": "Allow research data purchases up to 40 USD. Require approval above 25 USD.",
+  "modeHint": "single"
+}
