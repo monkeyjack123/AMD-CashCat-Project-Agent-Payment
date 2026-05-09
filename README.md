@@ -1,47 +1,53 @@
-# AMD-CashCat Project-Agent-Payment
+# AMD-CashCat-Project-Agent-Payment
 
-CashCat is a public-safe hackathon repository for an agent-native payments demo running on AMD cloud infrastructure.
+CashCat is a public-safe hackathon repository for an AI agent payments product demo designed for the AMD Developer Challenge.
 
-This repo is intentionally limited to submission-safe materials for the AMD Developer Challenge. It is not the full commercial codebase.
+This repository is intentionally separated from the private `AgentWallet` project. It contains only submission-safe materials for the hackathon.
 
 ## Track
 
 - AMD Developer Challenge
 - Track 1: AI Agents & Agentic Workflows
 
+## What This Public Repo Includes
+
+- A static product site for the hackathon submission
+- A live-feeling product demo with AI task entry and governed spend outputs
+- A multi-agent orchestration showcase page
+- A proof page with payment intent, receipt, spend proof, and workflow artifacts
+- Submission-safe examples, docs, and selected source excerpts
+- The current slide deck used for the presentation
+
 ## What The Demo Shows
 
-- An AI agent receives a bounded spend mandate for a task
-- The runtime converts that mandate into executable payment controls
-- A payment intent is created, evaluated, and wrapped in verifiable artifacts
-- Proofs and receipt data make the delegated spend flow auditable
+- A user gives an AI agent a business task
+- The AI proposes paid actions such as data, software, API, or compute purchases
+- CashCat governs budget, approvals, and spend permissions
+- The workflow returns evidence such as payment intent, receipt, spend proof, and downstream artifacts
 
-## Why This Fits Track 1
+## Public Site Entry Points
 
-CashCat is not presented as a generic fintech backend. The intended workflow is:
+- [index.html](./index.html): primary product page
+- [live-demo.html](./live-demo.html): explicit multi-agent orchestration showcase
+- [proof-demo.html](./proof-demo.html): proof-oriented payment flow page
+- [api.html](./api.html): public integration reference
 
-1. A user gives an AI agent a complex task.
-2. The AI agent decides a paid action is needed, such as buying an API call or dataset.
-3. CashCat converts that decision into a safe, bounded payment flow.
-4. The system returns verifiable evidence of why the spend was allowed.
+## Supporting Materials
 
-This repo currently focuses on the payment-control and runtime demo layer. The next step is to attach an open-source model based AI decision layer to generate structured payment intents from natural-language tasks.
-
-## Repository Layout
-
-- [docs/first-wedge-demo-flow.md](D:\台式机\Codex\AMD-CashCat-Project-Agent-Payment\docs\first-wedge-demo-flow.md): public-safe walkthrough of the first demo flow
-- [examples/first-wedge-demo-request.json](D:\台式机\Codex\AMD-CashCat-Project-Agent-Payment\examples\first-wedge-demo-request.json): sample request payload
-- [examples/first-wedge-demo-output-sanitized.json](D:\台式机\Codex\AMD-CashCat-Project-Agent-Payment\examples\first-wedge-demo-output-sanitized.json): redacted demo output
-- [public/first-wedge-demo.html](D:\台式机\Codex\AMD-CashCat-Project-Agent-Payment\public\first-wedge-demo.html): visual demo page
-- [showcase/README.md](D:\台式机\Codex\AMD-CashCat-Project-Agent-Payment\showcase\README.md): selected code excerpts from the private codebase
+- [docs/first-wedge-demo-flow.md](./docs/first-wedge-demo-flow.md): public-safe walkthrough of the first wedge
+- [examples/first-wedge-demo-request.json](./examples/first-wedge-demo-request.json): sample request payload
+- [examples/first-wedge-demo-output-sanitized.json](./examples/first-wedge-demo-output-sanitized.json): redacted output example
+- [showcase/README.md](./showcase/README.md): selected code excerpts from the private implementation
+- [CashCat-AMD-Track1-Deck.pptx](./CashCat-AMD-Track1-Deck.pptx): current presentation deck
 
 ## Public Scope
 
 Included:
 
-- Demo overview
+- Product summary
+- Demo pages
 - Public-safe docs and examples
-- Visual demo assets
+- Presentation assets
 - Selected code excerpts for reviewer inspection
 
 Excluded:
@@ -52,13 +58,8 @@ Excluded:
 - Partner integrations
 - Private roadmap and commercialization details
 
-## Model Direction
+## Repository Strategy
 
-For the next iteration, the intended AI layer will use an open-source model suitable for Track 1 workflow planning and structured output. Current candidates:
-
-- Qwen
-- Mistral
-
-The likely integration pattern is:
-
-- user task -> AI planner -> structured payment intent -> CashCat runtime
+- Keep the private `AgentWallet` repository separate.
+- Use this repository as the public hackathon submission shell.
+- Only copy in sanitized assets and submission-safe code.

@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CashCat | Multi-Agent Live Demo</title>
+    <style>
+      :root {
+        --bg: #06111b;
+        --bg-2: #0b1928;
+        --panel: rgba(11, 20, 34, 0.88);
+        --text: #eef8ff;
+        --muted: #90a8bd;
+        --soft: #cad9e8;
+        --line: rgba(145, 182, 220, 0.16);
+        --cyan: #57ecff;
+        --green: #73ffba;
+        --blue: #7a9fff;
+        --amber: #ffd166;
+        --red: #ff6e8d;
+        --font-display: "Satoshi", "Neue Haas Grotesk Display", "Avenir Next", "Aptos Display", "Segoe UI Variable Display", sans-serif;
+        --font-body: "Satoshi", "Avenir Next", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+        --font-mono: "Berkeley Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 12% 8%, rgba(87, 236, 255, 0.16), transparent 28%),
+          radial-gradient(circle at 86% 0%, rgba(122, 159, 255, 0.16), transparent 24%),
+          radial-gradient(circle at 72% 80%, rgba(115, 255, 186, 0.11), transparent 26%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 52%, #06111b 100%);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+      }
+      a { color: inherit; text-decoration: none; }
+      .shell { width: min(1380px, calc(100% - 32px)); margin: 0 auto; padding: 20px 0 48px; }
+      .topbar {
+        display: flex; align-items: center; justify-content: space-between; gap: 14px;
+        padding: 14px 16px; border: 1px solid var(--line); border-radius: 24px;
+        background: rgba(5, 10, 17, 0.76); backdrop-filter: blur(18px);
+      }
+      .brand { display: flex; align-items: center; gap: 12px; font-size: 13px; font-weight: 720; letter-spacing: .12em; text-transform: uppercase; }
+      .mark { width: 30px; height: 30px; border-radius: 11px; background: linear-gradient(135deg, var(--cyan), var(--green)); box-shadow: 0 0 32px rgba(87,236,255,.36); }
+      .top-links { display: flex; flex-wrap: wrap; gap: 10px; }
+      .pill {
+        display: inline-flex; align-items: center; min-height: 40px; padding: 0 14px; border-radius: 999px;
+        border: 1px solid var(--line); color: var(--muted); background: rgba(255,255,255,.04); font-size: 13px; font-weight: 650;
+      }
+      .pill.live { color: #031018; border: 0; background: linear-gradient(135deg, var(--cyan), var(--green)); }
+      .hero {
+        display: grid; grid-template-columns: .9fr 1.1fr; gap: 16px; margin-top: 16px;
+      }
+      .panel {
+        border: 1px solid var(--line); border-radius: 28px; background: var(--panel);
+        box-shadow: 0 26px 86px rgba(0,0,0,.34); overflow: hidden;
+      }
+      .copy { padding: 28px; }
+      .eyebrow {
+        display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; padding: 8px 11px;
+        border: 1px solid rgba(87,236,255,.24); border-radius: 999px; color: var(--cyan); background: rgba(87,236,255,.07);
+        font-size: 12px; font-weight: 680; letter-spacing: .12em; text-transform: uppercase;
+      }
+      .pulse { width: 8px; height: 8px; border-radius: 99px; background: var(--green); box-shadow: 0 0 0 0 rgba(115,255,186,.6); animation: pulse 1.7s infinite; }
+      h1 {
+        margin: 0; max-width: 11ch; font-family: var(--font-display); font-size: clamp(44px, 7vw, 82px);
+        font-weight: 620; line-height: .9; letter-spacing: -.06em;
+      }
+      .gradient { color: transparent; background: linear-gradient(120deg, #fff 0%, #a6f7ff 42%, #96ffcf 90%); -webkit-background-clip: text; background-clip: text; }
+      .copy p { margin: 18px 0 0; color: var(--soft); font-size: 17px; line-height: 1.66; max-width: 60ch; }
+      .workspace { padding: 18px; }
+      label {
+        display: block; margin: 12px 0 7px; color: var(--muted); font-size: 11px; font-weight: 720; letter-spacing: .09em; text-transform: uppercase;
+      }
+      textarea, input {
+        width: 100%; padding: 13px 14px; border: 1px solid rgba(145,182,220,.2); border-radius: 16px;
+        color: var(--text); background: rgba(2,8,14,.72); outline: none; font: inherit;
+      }
+      textarea { min-height: 120px; resize: vertical; line-height: 1.55; }
+      .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      button {
+        width: 100%; min-height: 52px; margin-top: 16px; border: 0; border-radius: 18px; color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green)); font: inherit; font-weight: 760; cursor: pointer;
+      }
+      .summary-grid, .agents-grid {
+        display: grid; gap: 14px; margin-top: 18px;
+      }
+      .summary-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .stat, .agent-card, .activity-card {
+        padding: 16px; border: 1px solid var(--line); border-radius: 20px; background: rgba(255,255,255,.04);
+      }
+      .stat span, .kicker {
+        display: block; color: var(--muted); font-size: 11px; font-weight: 720; letter-spacing: .09em; text-transform: uppercase;
+      }
+      .stat strong { display: block; margin-top: 9px; font-size: 18px; }
+      .section-title { margin: 22px 0 10px; font-size: 20px; font-weight: 620; }
+      .agents-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .agent-card h3 { margin: 8px 0 6px; font-size: 18px; }
+      .agent-card p { margin: 0 0 12px; color: var(--soft); line-height: 1.52; font-size: 14px; }
+      .mini-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+      .mini { padding: 11px 12px; border: 1px solid rgba(145,182,220,.13); border-radius: 14px; background: rgba(255,255,255,.03); }
+      .mini span { display: block; color: var(--muted); font-size: 10px; font-weight: 720; letter-spacing: .08em; text-transform: uppercase; }
+      .mini strong { display: block; margin-top: 6px; font-size: 14px; }
+      .activity-card { margin-top: 18px; }
+      .feed { display: grid; gap: 10px; }
+      .feed-item {
+        display: grid; grid-template-columns: 16px 1fr; gap: 11px; align-items: start;
+        padding: 12px 13px; border: 1px solid rgba(145,182,220,.13); border-radius: 16px; background: rgba(255,255,255,.03);
+      }
+      .dot { width: 10px; height: 10px; margin-top: 4px; border-radius: 999px; background: var(--amber); }
+      .feed-item.live .dot { background: var(--cyan); box-shadow: 0 0 0 0 rgba(87,236,255,.6); animation: pulse 1.7s infinite; }
+      .feed-item.pass .dot { background: var(--green); }
+      .feed-copy strong { display: block; margin-bottom: 4px; font-size: 14px; }
+      .feed-copy p { margin: 0; color: var(--soft); line-height: 1.5; font-size: 13px; }
+      details { margin-top: 18px; border: 1px solid rgba(145,182,220,.13); border-radius: 18px; background: rgba(255,255,255,.03); overflow: hidden; }
+      summary { padding: 14px 16px; cursor: pointer; color: var(--soft); font-weight: 620; }
+      pre {
+        max-height: 320px; margin: 0; padding: 0 16px 16px; overflow: auto; color: #bdefff;
+        font-family: var(--font-mono); font-size: 11.5px; line-height: 1.58; white-space: pre-wrap; word-break: break-word;
+      }
+      @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(115,255,186,0); } 100% { box-shadow: 0 0 0 0 rgba(115,255,186,0); } }
+      @media (max-width: 1020px) {
+        .hero, .summary-grid, .agents-grid, .row { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="topbar">
+        <a class="brand" href="./index.html"><span class="mark"></span>CashCat</a>
+        <div class="top-links">
+          <a class="pill" href="./index.html">Product</a>
+          <a class="pill" href="./api.html">API</a>
+          <a class="pill live" href="./live-demo.html">Multi-Agent Live Demo</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="panel copy">
+          <div class="eyebrow"><span class="pulse"></span> Live multi-agent orchestration</div>
+          <h1><span class="gradient">One master agent.</span> Multiple governed spend threads.</h1>
+          <p>
+            This demo shows the bigger CashCat story: a coordinator agent delegates budgets and
+            permissions to multiple specialist agents, then those agents concurrently propose paid
+            actions for data, software, and infrastructure.
+          </p>
+        </div>
+
+        <div class="panel workspace">
+          <label for="task">Portfolio Task</label>
+          <textarea id="task">Launch a market intelligence workflow and acquire the data, software, and cloud resources needed to complete it within a 500 USD budget, with approval required above 50 USD.</textarea>
+          <div class="row">
+            <div>
+              <label for="budget">Total Budget</label>
+              <input id="budget" value="500.00" />
+            </div>
+            <div>
+              <label for="approval">Approval Threshold</label>
+              <input id="approval" value="50.00" />
+            </div>
+          </div>
+          <button id="runFlow">Run Multi-Agent Orchestration</button>
+        </div>
+      </section>
+
+      <section class="summary-grid">
+        <div class="stat"><span>Coordinator</span><strong id="coordinatorMetric">ag_cashcat_orchestrator</strong></div>
+        <div class="stat"><span>Delegated Agents</span><strong id="agentsMetric">3</strong></div>
+        <div class="stat"><span>Portfolio Budget</span><strong id="budgetMetric">500.00 USD</strong></div>
+        <div class="stat"><span>Portfolio Status</span><strong id="statusMetric">Waiting</strong></div>
+      </section>
+
+      <section class="activity-card">
+        <div class="kicker">Coordinator Activity</div>
+        <h2 class="section-title">How the master agent allocates money and authority</h2>
+        <div id="feed" class="feed">
+          <div class="feed-item">
+            <div class="dot"></div>
+            <div class="feed-copy">
+              <strong>Waiting for orchestration run</strong>
+              <p>The coordinator agent will split the budget across specialist agents and send each of them a bounded spend mandate.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <h2 class="section-title">Parallel specialist agents</h2>
+      <section id="agentsGrid" class="agents-grid">
+        <article class="agent-card"><span class="kicker">Agent lane</span><h3>Market Intelligence Agent</h3><p>Waiting for delegated budget and task.</p></article>
+        <article class="agent-card"><span class="kicker">Agent lane</span><h3>Tooling Procurement Agent</h3><p>Waiting for delegated budget and task.</p></article>
+        <article class="agent-card"><span class="kicker">Agent lane</span><h3>Compute Operations Agent</h3><p>Waiting for delegated budget and task.</p></article>
+      </section>
+
+      <details>
+        <summary>View orchestration payload</summary>
+        <pre id="technicalOutput">No output yet.</pre>
+      </details>
+    </main>
+
+    <script src="./site-data.js"></script>
+    <script>
+      const taskInput = document.getElementById("task");
+      const budgetInput = document.getElementById("budget");
+      const approvalInput = document.getElementById("approval");
+      const runFlowButton = document.getElementById("runFlow");
+      const coordinatorMetric = document.getElementById("coordinatorMetric");
+      const agentsMetric = document.getElementById("agentsMetric");
+      const budgetMetric = document.getElementById("budgetMetric");
+      const statusMetric = document.getElementById("statusMetric");
+      const feed = document.getElementById("feed");
+      const agentsGrid = document.getElementById("agentsGrid");
+      const technicalOutput = document.getElementById("technicalOutput");
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function renderFeed(items) {
+        feed.innerHTML = items.map((item) => `
+          <div class="feed-item ${item.mode || ""}">
+            <div class="dot"></div>
+            <div class="feed-copy">
+              <strong>${item.title}</strong>
+              <p>${item.body}</p>
+            </div>
+          </div>
+        `).join("");
+      }
+
+      function renderAgents(agentRuns) {
+        agentsGrid.innerHTML = agentRuns.map((run) => {
+          const vendor = run.plannerResult.vendor.replace(/_/g, " ");
+          return `
+            <article class="agent-card">
+              <span class="kicker">${run.role}</span>
+              <h3>${run.agentId}</h3>
+              <p>${run.plannerResult.reasoning}</p>
+              <div class="mini-grid">
+                <div class="mini"><span>Assigned Budget</span><strong>${run.assignedBudget} USD</strong></div>
+                <div class="mini"><span>Planned Spend</span><strong>${run.plannerResult.amount} USD</strong></div>
+                <div class="mini"><span>Category</span><strong>${run.plannerResult.category}</strong></div>
+                <div class="mini"><span>Vendor</span><strong>${vendor}</strong></div>
+                <div class="mini"><span>Intent Status</span><strong>${run.demoResult.paymentIntent.status.replace(/_/g, " ")}</strong></div>
+                <div class="mini"><span>Receipt</span><strong>${run.demoResult.executionReceipt.receiptId}</strong></div>
+              </div>
+            </article>
+          `;
+        }).join("");
+      }
+
+      function renderResult(result) {
+        coordinatorMetric.textContent = result.coordinator.coordinatorAgentId;
+        agentsMetric.textContent = String(result.coordinator.delegatedAgents);
+        budgetMetric.textContent = `${result.coordinator.totalBudget} ${result.coordinator.currency}`;
+        statusMetric.textContent = result.fundingPlan.status.replace(/_/g, " ");
+
+        renderFeed([
+          {
+            mode: "pass",
+            title: "Coordinator parsed the top-level objective",
+            body: "The master agent broke the workflow into specialist lanes for intelligence, tooling, and compute."
+          },
+          {
+            mode: "pass",
+            title: "Budgets and permissions were delegated",
+            body: `CashCat delegated ${result.coordinator.totalBudget} ${result.coordinator.currency} across ${result.coordinator.delegatedAgents} specialist agents with approval above ${result.coordinator.approvalThreshold} ${result.coordinator.currency}.`
+          },
+          {
+            mode: "pass",
+            title: "Agent lanes ran concurrently",
+            body: `The specialist agents requested ${result.fundingPlan.requestedTotal} ${result.coordinator.currency} in aggregate across multiple payment flows.`
+          },
+          {
+            mode: result.fundingPlan.status === "portfolio_needs_review" ? "warn" : "pass",
+            title: "Portfolio governance applied",
+            body: result.fundingPlan.status === "portfolio_needs_review"
+              ? "The portfolio is within delegated budget, but aggregate requests cross the approval threshold and require review."
+              : "The delegated portfolio remained within autonomous operating bounds."
+          }
+        ]);
+
+        renderAgents(result.agentRuns);
+        technicalOutput.textContent = JSON.stringify(result, null, 2);
+      }
+
+      async function runFlow() {
+        runFlowButton.disabled = true;
+        runFlowButton.textContent = "Running orchestration...";
+        statusMetric.textContent = "orchestrating";
+        renderFeed([
+          {
+            mode: "live",
+            title: "Coordinator is parsing the portfolio task",
+            body: `The master agent is turning the instruction into multiple spend threads: "${taskInput.value}"`
+          },
+          {
+            mode: "",
+            title: "Preparing delegated budgets",
+            body: `CashCat is loading a shared budget of ${budgetInput.value} USD and an approval threshold of ${approvalInput.value} USD.`
+          },
+          {
+            mode: "",
+            title: "Dispatching specialist agents",
+            body: "Market intelligence, tooling procurement, and compute operations agents will run concurrently."
+          }
+        ]);
+
+        try {
+          await sleep(350);
+          const result = window.CashCatSiteData.buildStaticMultiAgentFlow({
+            task: taskInput.value,
+            totalBudget: budgetInput.value,
+            approvalThreshold: approvalInput.value,
+            currency: "USD"
+          });
+          renderResult(result);
+        } catch (error) {
+          statusMetric.textContent = "failed";
+          renderFeed([
+            {
+              mode: "fail",
+              title: "Multi-agent orchestration failed",
+              body: error && error.message ? error.message : "Unknown error"
+            }
+          ]);
+          technicalOutput.textContent = JSON.stringify({ error: error && error.message ? error.message : "Unknown error" }, null, 2);
+        } finally {
+          runFlowButton.disabled = false;
+          runFlowButton.textContent = "Run Multi-Agent Orchestration";
+        }
+      }
+
+      runFlowButton.addEventListener("click", runFlow);
+      runFlow();
+    </script>
+  </body>
+</html>

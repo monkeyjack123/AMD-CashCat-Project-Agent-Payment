@@ -1,0 +1,2059 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CashCat | AI Agent Payments</title>
+    <style>
+      :root {
+        --bg: #07111a;
+        --bg-2: #0b1824;
+        --panel: rgba(10, 19, 31, 0.86);
+        --panel-soft: rgba(14, 26, 42, 0.82);
+        --text: #eef8ff;
+        --muted: #91a8bc;
+        --soft: #cad9e8;
+        --line: rgba(145, 182, 220, 0.16);
+        --cyan: #57ecff;
+        --green: #73ffba;
+        --blue: #7a9fff;
+        --amber: #ffd166;
+        --red: #ff6e8d;
+        --shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+        --font-display: "Satoshi", "Neue Haas Grotesk Display", "Avenir Next", "Aptos Display", "Segoe UI Variable Display", sans-serif;
+        --font-body: "Satoshi", "Avenir Next", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+        --font-mono: "Berkeley Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 14% 8%, rgba(87, 236, 255, 0.18), transparent 30%),
+          radial-gradient(circle at 82% 0%, rgba(122, 159, 255, 0.14), transparent 26%),
+          radial-gradient(circle at 75% 78%, rgba(115, 255, 186, 0.1), transparent 28%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 55%, #07111a 100%);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 48px 48px;
+        mask-image: linear-gradient(to bottom, black, transparent 84%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        width: min(1480px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 18px 0 56px;
+      }
+
+      .nav {
+        position: sticky;
+        top: 16px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 16px 13px 18px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(5, 10, 17, 0.74);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        font-size: 13px;
+        font-weight: 720;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        box-shadow: 0 0 34px rgba(87, 236, 255, 0.38);
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 560;
+      }
+
+      .nav-cta {
+        padding: 10px 14px;
+        border-radius: 999px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        font-weight: 720;
+      }
+
+      .hero {
+        display: grid;
+        gap: 18px;
+        padding: 34px 0 20px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 14px;
+        padding: 8px 12px;
+        border: 1px solid rgba(87, 236, 255, 0.24);
+        border-radius: 999px;
+        color: var(--cyan);
+        background: rgba(87, 236, 255, 0.07);
+        font-size: 12px;
+        font-weight: 680;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--green);
+        box-shadow: 0 0 0 0 rgba(115, 255, 186, 0.6);
+        animation: pulse 1.8s infinite;
+      }
+
+      h1 {
+        max-width: 14ch;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(36px, 6vw, 72px);
+        font-weight: 640;
+        line-height: 0.92;
+        letter-spacing: -0.068em;
+      }
+
+      .gradient {
+        background: linear-gradient(120deg, #fff 0%, #a6f7ff 42%, #96ffcf 90%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .hero-copy p {
+        max-width: 64ch;
+        margin: 14px 0 0;
+        color: var(--soft);
+        font-size: 17px;
+        line-height: 1.62;
+      }
+
+      .intro-row {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 18px;
+        align-items: end;
+      }
+
+      .story-strip {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .story-chip {
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .story-chip span {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .story-chip strong {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--text);
+        font-size: 16px;
+      }
+
+      .story-chip p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.5;
+      }
+
+      .workspace {
+        border: 1px solid rgba(145, 182, 220, 0.22);
+        border-radius: 32px;
+        background:
+          linear-gradient(180deg, rgba(12, 22, 36, 0.94), rgba(6, 11, 18, 0.96)),
+          rgba(5, 10, 17, 0.94);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .workspace-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 18px;
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 12px;
+      }
+
+      .traffic {
+        display: flex;
+        gap: 8px;
+      }
+
+      .traffic span {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--red);
+      }
+
+      .traffic span:nth-child(2) {
+        background: var(--amber);
+      }
+
+      .traffic span:nth-child(3) {
+        background: var(--green);
+      }
+
+      .workspace-body {
+        display: grid;
+        gap: 16px;
+        padding: 0 18px 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .input-panel,
+      .result-panel {
+        padding: 18px;
+      }
+
+      .workspace-body.pre-run .input-panel {
+        position: relative;
+        overflow: hidden;
+        border-color: rgba(87, 236, 255, 0.26);
+        background:
+          radial-gradient(circle at 18% 0%, rgba(87, 236, 255, 0.12), transparent 34%),
+          radial-gradient(circle at 88% 100%, rgba(115, 255, 186, 0.1), transparent 32%),
+          rgba(255, 255, 255, 0.04);
+        box-shadow:
+          0 0 0 1px rgba(87, 236, 255, 0.08),
+          0 34px 110px rgba(0, 0, 0, 0.38);
+      }
+
+      .workspace-body.pre-run .input-panel::before {
+        position: absolute;
+        inset: -1px;
+        z-index: 0;
+        content: "";
+        border-radius: 24px;
+        padding: 1px;
+        background: linear-gradient(135deg, rgba(87, 236, 255, 0.4), rgba(115, 255, 186, 0.08), rgba(122, 159, 255, 0.22));
+        -webkit-mask:
+          linear-gradient(#fff 0 0) content-box,
+          linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+                mask-composite: exclude;
+        pointer-events: none;
+      }
+
+      .workspace-body.pre-run .input-panel > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .panel h2 {
+        margin: 0 0 14px;
+        font-size: 19px;
+        font-weight: 620;
+        letter-spacing: -0.02em;
+      }
+
+      label {
+        display: block;
+        margin: 13px 0 7px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      textarea,
+      input {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid rgba(145, 182, 220, 0.2);
+        border-radius: 16px;
+        color: var(--text);
+        background: rgba(2, 8, 14, 0.72);
+        outline: none;
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.55;
+      }
+
+      .task-box {
+        min-height: 210px;
+        padding: 32px 34px;
+        border-radius: 32px;
+        font-size: 25px;
+        line-height: 1.65;
+        border-color: rgba(87, 236, 255, 0.22);
+        background:
+          linear-gradient(180deg, rgba(6, 14, 23, 0.9), rgba(4, 10, 17, 0.96)),
+          rgba(2, 8, 14, 0.72);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.03),
+          0 18px 52px rgba(0, 0, 0, 0.24);
+      }
+
+      .workspace-body.pre-run .result-panel {
+        display: none;
+      }
+
+      .workspace-body.pre-run {
+        grid-template-columns: 1fr;
+        padding: 0 18px 18px;
+      }
+
+      .workspace-body.pre-run .input-panel {
+        width: min(100%, 1300px);
+        max-width: 1300px;
+        margin: 0 auto;
+      }
+
+      .workspace-body.live-run .result-panel {
+        display: block;
+        animation: reveal 420ms ease;
+      }
+
+      .quick-prompts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 14px 0 0;
+        align-items: center;
+      }
+
+      .quick-prompts-label {
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .prompt-chip {
+        padding: 10px 13px;
+        border: 1px solid rgba(145, 182, 220, 0.18);
+        border-radius: 999px;
+        color: var(--soft);
+        background: rgba(255, 255, 255, 0.035);
+        font: inherit;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .composer-actions {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        margin-top: 14px;
+      }
+
+      .composer-note {
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.5;
+        max-width: 54ch;
+      }
+
+      .composer-button {
+        width: auto;
+        min-width: 280px;
+        margin-top: 0;
+        padding: 0 28px;
+        font-size: 16px;
+      }
+
+      button {
+        width: 100%;
+        min-height: 58px;
+        margin-top: 16px;
+        border: 0;
+        border-radius: 20px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        box-shadow: 0 24px 70px rgba(87, 236, 255, 0.24);
+        font: inherit;
+        font-weight: 760;
+        cursor: pointer;
+      }
+
+      .hint {
+        margin-top: 12px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .advanced {
+        margin-top: 18px;
+        border: 1px solid rgba(145, 182, 220, 0.14);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        opacity: 0.9;
+      }
+
+      .advanced summary {
+        padding: 14px 16px;
+        cursor: pointer;
+        color: var(--soft);
+        font-weight: 620;
+      }
+
+      .advanced-body {
+        padding: 0 16px 16px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .timeline {
+        display: grid;
+        gap: 12px;
+      }
+
+      .thinking-stage {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-height: 220px;
+        padding: 28px 22px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 22px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(87, 236, 255, 0.08), transparent 34%),
+          rgba(255, 255, 255, 0.03);
+      }
+
+      .thinking-stage.visible {
+        display: flex;
+        animation: reveal 260ms ease;
+      }
+
+      .thinking-shell {
+        display: grid;
+        justify-items: center;
+        gap: 14px;
+        text-align: center;
+      }
+
+      .spinner {
+        width: 58px;
+        height: 58px;
+        border: 3px solid rgba(145, 182, 220, 0.18);
+        border-top-color: var(--cyan);
+        border-right-color: var(--green);
+        border-radius: 999px;
+        animation: spin 0.95s linear infinite;
+        box-shadow: 0 0 30px rgba(87, 236, 255, 0.16);
+      }
+
+      .thinking-title {
+        font-size: 20px;
+        font-weight: 620;
+      }
+
+      .thinking-copy {
+        max-width: 54ch;
+        color: var(--soft);
+        line-height: 1.55;
+      }
+
+      .timeline-step {
+        display: grid;
+        grid-template-columns: 40px 1fr;
+        gap: 14px;
+        align-items: start;
+        padding: 16px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 18px;
+        background: rgba(2, 8, 14, 0.54);
+      }
+
+      .timeline-index {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 14px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        font-weight: 760;
+      }
+
+      .timeline-copy span {
+        display: block;
+        margin-bottom: 6px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .timeline-copy strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 18px;
+        font-weight: 640;
+      }
+
+      .timeline-copy p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.55;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+        padding: 6px 10px;
+        border: 1px solid rgba(145, 182, 220, 0.16);
+        border-radius: 999px;
+        color: var(--soft);
+        background: rgba(255, 255, 255, 0.035);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .mode-note {
+        margin-top: 8px;
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.45;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: var(--amber);
+      }
+
+      .status-pill.live .status-dot {
+        background: var(--cyan);
+        box-shadow: 0 0 0 0 rgba(87, 236, 255, 0.6);
+        animation: pulse 1.8s infinite;
+      }
+
+      .status-pill.pass .status-dot {
+        background: var(--green);
+      }
+
+      .status-pill.warn .status-dot {
+        background: var(--amber);
+      }
+
+      .status-pill.fail .status-dot {
+        background: var(--red);
+      }
+
+      .decision-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .decision-metric {
+        padding: 12px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .decision-metric span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .decision-metric strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 15px;
+        font-weight: 640;
+        color: var(--text);
+      }
+
+      .result-banner {
+        margin-top: 12px;
+        padding: 14px 16px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .result-banner span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .result-banner strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 16px;
+      }
+
+      .evidence-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .evidence-card {
+        padding: 12px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .evidence-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .evidence-card strong {
+        display: block;
+        margin-top: 8px;
+        color: var(--text);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        line-height: 1.45;
+        word-break: break-word;
+      }
+
+      .event-log {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .artifact-panel {
+        margin-top: 12px;
+        padding: 14px 16px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .artifact-panel span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .artifact-panel strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 16px;
+      }
+
+      .artifact-panel p {
+        margin: 8px 0 0;
+        color: var(--soft);
+        line-height: 1.5;
+        font-size: 14px;
+      }
+
+      .artifact-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .artifact-pill {
+        padding: 8px 10px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 999px;
+        color: var(--soft);
+        background: rgba(255, 255, 255, 0.03);
+        font-size: 12px;
+      }
+
+      .artifact-showcase {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .artifact-block {
+        padding: 12px 13px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .artifact-block span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .artifact-block strong {
+        display: block;
+        margin-top: 7px;
+        font-size: 14px;
+      }
+
+      .artifact-block p {
+        margin: 6px 0 0;
+        color: var(--soft);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .event-item {
+        display: grid;
+        grid-template-columns: 92px 14px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 11px 12px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .event-time {
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 11px;
+      }
+
+      .event-node {
+        width: 10px;
+        height: 10px;
+        margin-top: 4px;
+        border-radius: 999px;
+        background: var(--amber);
+      }
+
+      .event-item.pass .event-node {
+        background: var(--green);
+      }
+
+      .event-item.warn .event-node {
+        background: var(--amber);
+      }
+
+      .event-item.fail .event-node {
+        background: var(--red);
+      }
+
+      .event-copy strong {
+        display: block;
+        margin-bottom: 4px;
+        font-size: 13px;
+      }
+
+      .event-copy p {
+        margin: 0;
+        color: var(--soft);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .activity-feed {
+        display: grid;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .activity-item {
+        display: grid;
+        grid-template-columns: 18px 1fr;
+        gap: 12px;
+        align-items: start;
+        padding: 12px 13px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .activity-dot {
+        width: 10px;
+        height: 10px;
+        margin-top: 5px;
+        border-radius: 999px;
+        background: var(--amber);
+      }
+
+      .activity-item.live .activity-dot {
+        background: var(--cyan);
+        box-shadow: 0 0 0 0 rgba(87, 236, 255, 0.6);
+        animation: pulse 1.8s infinite;
+      }
+
+      .activity-item.pass .activity-dot {
+        background: var(--green);
+      }
+
+      .activity-copy strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: 640;
+        color: var(--text);
+      }
+
+      .activity-copy p {
+        margin: 0;
+        color: var(--soft);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .result-card {
+        padding: 16px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 18px;
+        background: rgba(2, 8, 14, 0.54);
+      }
+
+      .result-card span {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .result-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 18px;
+        font-weight: 640;
+      }
+
+      .result-card p {
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.5;
+      }
+
+      .control-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .control {
+        padding: 13px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.035);
+      }
+
+      .control span {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 720;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .control strong {
+        display: block;
+        margin-top: 7px;
+        font-size: 15px;
+        font-weight: 640;
+      }
+
+      .control.pass strong {
+        color: var(--green);
+      }
+
+      .control.warn strong {
+        color: var(--amber);
+      }
+
+      .control.fail strong {
+        color: var(--red);
+      }
+
+      .details {
+        margin-top: 12px;
+        border: 1px solid rgba(145, 182, 220, 0.13);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.03);
+        overflow: hidden;
+      }
+
+      .details summary {
+        padding: 14px 16px;
+        cursor: pointer;
+        color: var(--soft);
+        font-weight: 620;
+      }
+
+      pre {
+        max-height: 280px;
+        margin: 0;
+        padding: 0 16px 16px;
+        overflow: auto;
+        color: #bdefff;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        line-height: 1.58;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .section {
+        margin-top: 22px;
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: var(--panel);
+      }
+
+      .section-inner {
+        padding: 26px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 18px;
+      }
+
+      .section-head h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(32px, 5vw, 60px);
+        font-weight: 620;
+        line-height: 0.96;
+        letter-spacing: -0.05em;
+      }
+
+      .section-head p {
+        max-width: 54ch;
+        margin: 0;
+        color: var(--soft);
+        line-height: 1.65;
+      }
+
+      .how-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .step {
+        padding: 18px;
+        border: 1px solid rgba(145, 182, 220, 0.14);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .step-index {
+        display: inline-grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        margin-bottom: 16px;
+        border-radius: 11px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        font-weight: 760;
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 18px;
+      }
+
+      .step p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .footnote {
+        margin-top: 16px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @keyframes pulse {
+        70% {
+          box-shadow: 0 0 0 10px rgba(115, 255, 186, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(115, 255, 186, 0);
+        }
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1020px) {
+        .intro-row,
+        .story-strip,
+        .decision-grid,
+        .evidence-grid,
+        .workspace-body,
+        .control-grid,
+        .how-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .nav {
+          flex-direction: column;
+          align-items: flex-start;
+          border-radius: 24px;
+        }
+
+        .nav-links {
+          flex-wrap: wrap;
+        }
+
+        .composer-actions {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .composer-button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="nav">
+        <a class="brand" href="/">
+          <span class="mark"></span>
+          CashCat
+        </a>
+        <div class="nav-links">
+          <a href="#how">How It Works</a>
+          <a href="./live-demo.html">Live Demo</a>
+          <a href="./api.html">API</a>
+          <a class="nav-cta" href="./live-demo.html">Try Live Run</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="intro-row">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="pulse"></span> Live AI payment product</div>
+            <h1><span class="gradient">Tell an AI what to do.</span> CashCat governs the money behind it.</h1>
+            <p>
+              CashCat is the payment and spend control layer for AI agents. A user gives one task,
+              the AI decides which paid resources are needed, and CashCat governs budget, approval,
+              and proof before money moves.
+            </p>
+          </div>
+
+          <div class="story-strip">
+            <article class="story-chip">
+              <span>Input</span>
+              <strong>Normal task</strong>
+              <p>No payment form. The user just gives an outcome, workflow, or business objective.</p>
+            </article>
+            <article class="story-chip">
+              <span>AI</span>
+              <strong>Purchase proposal</strong>
+              <p>The model decides what services, data, software, or compute should be acquired to finish the job.</p>
+            </article>
+            <article class="story-chip">
+              <span>CashCat</span>
+              <strong>Governed execution</strong>
+              <p>Budget, approval, proof, and receipt are applied before money ever moves.</p>
+            </article>
+          </div>
+        </div>
+
+        <section class="workspace">
+          <div class="workspace-top">
+            <div class="traffic"><span></span><span></span><span></span></div>
+            <span>cashcat.agent.run</span>
+          </div>
+
+          <div id="workspaceBody" class="workspace-body pre-run">
+            <aside class="panel input-panel">
+              <h2>Give the agent a task</h2>
+              <label for="task">User Task</label>
+              <textarea id="task" class="task-box" placeholder="Ask the agent to complete a real business task. It can decide what paid tools, data, software, or compute are needed, then CashCat will govern the spend.&#10;&#10;Example: Launch a market intelligence workflow and acquire the data, software, and cloud resources needed to complete it within a 500 USD budget, with approval required above 50 USD."></textarea>
+              <div class="quick-prompts">
+                <span class="quick-prompts-label">Prompt starters</span>
+                <button class="prompt-chip" type="button" data-task="Launch a market intelligence workflow and acquire the data, software, and cloud resources needed to complete it within a 500 USD budget, with approval required above 50 USD.">Market research</button>
+                <button class="prompt-chip" type="button" data-task="Prepare an AI product launch by sourcing the software, evaluation APIs, and cloud services needed to execute the rollout within a 300 USD budget.">Product launch</button>
+                <button class="prompt-chip" type="button" data-task="Source the vendors, subscriptions, and infrastructure needed for an operations workflow, while routing any spend above 75 USD for approval.">Vendor sourcing</button>
+                <button class="prompt-chip" type="button" data-task="Evaluate multiple model providers and purchase the best APIs and benchmark services needed to compare them under a controlled budget.">Model evaluation</button>
+                <button class="prompt-chip" type="button" data-task="Assemble the paid data sources, software tools, and compute services needed for a new internal initiative without exposing the company’s primary funds.">Internal initiative</button>
+              </div>
+
+              <div class="composer-actions">
+                <p class="composer-note">
+                  Use one natural-language instruction. These are just starting prompts, not the product boundary. CashCat lets the AI decide what it needs, then governs the money behind that decision.
+                </p>
+                <button id="runFlow" class="composer-button">Start Agent Run</button>
+              </div>
+
+              <details class="advanced">
+                <summary>Optional spend controls</summary>
+                <div class="advanced-body">
+                  <label for="budget">Budget Limit</label>
+                  <input id="budget" value="500.00" />
+
+                  <label for="policy">Approval Rule</label>
+                  <textarea id="policy">Allow this operations agent to spend up to 500 USD on data, API, software, subscription, and infrastructure purchases, and require approval for anything above 50 USD.</textarea>
+                </div>
+              </details>
+            </aside>
+
+            <section class="panel result-panel">
+              <h2>Agent run</h2>
+              <div id="thinkingStage" class="thinking-stage">
+                <div class="thinking-shell">
+                  <div class="spinner"></div>
+                  <div class="thinking-title">Agent is thinking</div>
+                  <div id="thinkingCopy" class="thinking-copy">The model is interpreting the task, deciding what paid resources are needed, and preparing a governed spend plan.</div>
+                </div>
+              </div>
+              <div class="timeline">
+                <div class="timeline-step">
+                  <div class="timeline-index">1</div>
+                  <div class="timeline-copy">
+                    <span>Task</span>
+                    <strong id="taskTitle">Waiting for a task</strong>
+                    <p id="taskBody">The run starts when a user gives the AI a concrete outcome to achieve.</p>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="timeline-index">2</div>
+                  <div class="timeline-copy">
+                    <span>AI Proposal</span>
+                    <div id="agentStatus" class="status-pill"><span class="status-dot"></span><span id="agentStatusText">Waiting for run</span></div>
+                    <div id="runModeNote" class="mode-note">Simple tasks stay in a single agent lane. Broader workflows automatically activate orchestration.</div>
+                    <strong id="aiDecisionTitle">Waiting for a task</strong>
+                    <p id="aiDecisionBody">The model will explain what it wants to buy, why it needs it, and how much it expects to spend.</p>
+                    <div id="activityFeed" class="activity-feed">
+                      <div class="activity-item">
+                        <div class="activity-dot"></div>
+                        <div class="activity-copy">
+                          <strong>Agent activity will appear here</strong>
+                          <p>Start a run to see the AI parse the task, identify paid actions, and prepare a governed spend request.</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="decision-grid">
+                      <div class="decision-metric"><span>Vendor</span><strong id="metricVendor">Pending</strong></div>
+                      <div class="decision-metric"><span>Amount</span><strong id="metricAmount">Pending</strong></div>
+                      <div class="decision-metric"><span>Category</span><strong id="metricCategory">Pending</strong></div>
+                      <div class="decision-metric"><span>Confidence</span><strong id="metricConfidence">Pending</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="timeline-index">3</div>
+                  <div class="timeline-copy">
+                    <span>CashCat Controls</span>
+                    <div class="control-grid" id="controlsGrid">
+                      <div class="control"><span>Budget</span><strong>20.00 USD</strong></div>
+                      <div class="control"><span>Approval</span><strong>Above 10 USD</strong></div>
+                      <div class="control"><span>Primary Funds</span><strong>Protected</strong></div>
+                      <div class="control"><span>Decision</span><strong>Pending</strong></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-step">
+                  <div class="timeline-index">4</div>
+                  <div class="timeline-copy">
+                    <span>Execution Result</span>
+                    <strong id="resultTitle">No payment proposal yet</strong>
+                    <p id="resultBody">The final result will show whether the payment was approved, sent to approval, or blocked before money moved.</p>
+                    <div class="result-banner">
+                      <span>Live output</span>
+                      <strong id="resultMeta">No receipt or proof yet.</strong>
+                    </div>
+                    <div class="evidence-grid">
+                      <div class="evidence-card">
+                        <span>Model</span>
+                        <strong id="modelEvidence">Pending</strong>
+                      </div>
+                      <div class="evidence-card">
+                        <span>Payment Intent</span>
+                        <strong id="intentEvidence">Pending</strong>
+                      </div>
+                      <div class="evidence-card">
+                        <span>Receipt</span>
+                        <strong id="receiptEvidence">Pending</strong>
+                      </div>
+                      <div class="evidence-card">
+                        <span>Spend Proof</span>
+                        <strong id="proofEvidence">Pending</strong>
+                      </div>
+                    </div>
+                    <div class="artifact-panel">
+                      <span>Workflow Result Artifact</span>
+                      <strong id="artifactTitle">No downstream task result yet.</strong>
+                      <p id="artifactSummary">After the governed payment step, the product should show what concrete output the workflow actually produced.</p>
+                      <div id="artifactList" class="artifact-list">
+                        <div class="artifact-pill">Waiting for run</div>
+                      </div>
+                      <div id="artifactShowcase" class="artifact-showcase"></div>
+                    </div>
+                    <div id="eventLog" class="event-log">
+                      <div class="event-item">
+                        <div class="event-time">--:--:--</div>
+                        <div class="event-node"></div>
+                        <div class="event-copy">
+                          <strong>No execution events yet</strong>
+                          <p>Run a task to see payment creation, policy checks, approval routing, and proof generation events.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <details class="details">
+                  <summary>View technical details</summary>
+                  <pre id="technicalOutput">No output yet.</pre>
+                </details>
+              </div>
+            </section>
+          </div>
+        </section>
+      </section>
+
+      <section id="how" class="section">
+        <div class="section-inner">
+          <div class="section-head">
+            <h2>How CashCat works.</h2>
+            <p>
+              CashCat starts with digital spend like APIs, data, software, subscriptions, and cloud
+              resources, but the system is built for any governed payment an AI agent is allowed to make.
+            </p>
+          </div>
+          <div class="how-grid">
+            <article class="step">
+              <span class="step-index">1</span>
+              <strong>User gives a task</strong>
+              <p>The experience starts with a business objective, workflow, or operating task, not a payment form.</p>
+            </article>
+            <article class="step">
+              <span class="step-index">2</span>
+              <strong>AI proposes a purchase</strong>
+              <p>The model returns which paid resources are needed, why they matter, and what they should cost.</p>
+            </article>
+            <article class="step">
+              <span class="step-index">3</span>
+              <strong>CashCat applies controls</strong>
+              <p>Budget, category, approval, and authority rules decide whether the spend can proceed.</p>
+            </article>
+            <article class="step">
+              <span class="step-index">4</span>
+              <strong>Proof and receipt are returned</strong>
+              <p>The outcome is inspectable, auditable, and machine-verifiable for finance and ops teams.</p>
+            </article>
+          </div>
+          <p class="footnote">The AI decides. CashCat governs.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="./site-data.js"></script>
+    <script>
+      const taskInput = document.getElementById("task");
+      const budgetInput = document.getElementById("budget");
+      const policyInput = document.getElementById("policy");
+      const runFlowButton = document.getElementById("runFlow");
+      const workspaceBody = document.getElementById("workspaceBody");
+      const promptButtons = Array.from(document.querySelectorAll(".prompt-chip"));
+      const thinkingStage = document.getElementById("thinkingStage");
+      const thinkingCopy = document.getElementById("thinkingCopy");
+      const taskTitle = document.getElementById("taskTitle");
+      const taskBody = document.getElementById("taskBody");
+      const agentStatus = document.getElementById("agentStatus");
+      const agentStatusText = document.getElementById("agentStatusText");
+      const runModeNote = document.getElementById("runModeNote");
+      const aiDecisionTitle = document.getElementById("aiDecisionTitle");
+      const aiDecisionBody = document.getElementById("aiDecisionBody");
+      const activityFeed = document.getElementById("activityFeed");
+      const metricVendor = document.getElementById("metricVendor");
+      const metricAmount = document.getElementById("metricAmount");
+      const metricCategory = document.getElementById("metricCategory");
+      const metricConfidence = document.getElementById("metricConfidence");
+      const resultTitle = document.getElementById("resultTitle");
+      const resultBody = document.getElementById("resultBody");
+      const resultMeta = document.getElementById("resultMeta");
+      const modelEvidence = document.getElementById("modelEvidence");
+      const intentEvidence = document.getElementById("intentEvidence");
+      const receiptEvidence = document.getElementById("receiptEvidence");
+      const proofEvidence = document.getElementById("proofEvidence");
+      const artifactTitle = document.getElementById("artifactTitle");
+      const artifactSummary = document.getElementById("artifactSummary");
+      const artifactList = document.getElementById("artifactList");
+      const artifactShowcase = document.getElementById("artifactShowcase");
+      const eventLog = document.getElementById("eventLog");
+      const technicalOutput = document.getElementById("technicalOutput");
+      const controlsGrid = document.getElementById("controlsGrid");
+
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      function setRunMode(mode) {
+        workspaceBody.classList.remove("pre-run", "live-run");
+        workspaceBody.classList.add(mode);
+      }
+
+      function showThinking(message) {
+        thinkingCopy.textContent = message;
+        thinkingStage.classList.add("visible");
+      }
+
+      function hideThinking() {
+        thinkingStage.classList.remove("visible");
+      }
+
+      async function revealActivities(sequence, delayMs) {
+        const rendered = [];
+        for (const item of sequence) {
+          rendered.push(item);
+          renderActivities([...rendered]);
+          await sleep(delayMs);
+        }
+      }
+
+      async function revealEvents(sequence, delayMs) {
+        const rendered = [];
+        for (const item of sequence) {
+          rendered.push(item);
+          renderEventLog([...rendered]);
+          await sleep(delayMs);
+        }
+      }
+
+      function timestampLabel() {
+        return new Date().toLocaleTimeString("en-US", {
+          hour12: false,
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        });
+      }
+
+      function setAgentStatus(mode, text) {
+        agentStatus.className = `status-pill ${mode}`;
+        agentStatusText.textContent = text;
+      }
+
+      function renderActivities(items) {
+        activityFeed.innerHTML = items
+          .map(
+            (item) => `
+              <div class="activity-item ${item.mode ?? ""}">
+                <div class="activity-dot"></div>
+                <div class="activity-copy">
+                  <strong>${item.title}</strong>
+                  <p>${item.body}</p>
+                </div>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderEventLog(items) {
+        eventLog.innerHTML = items
+          .map(
+            (item) => `
+              <div class="event-item ${item.mode ?? ""}">
+                <div class="event-time">${item.time}</div>
+                <div class="event-node"></div>
+                <div class="event-copy">
+                  <strong>${item.title}</strong>
+                  <p>${item.body}</p>
+                </div>
+              </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderArtifact(artifact) {
+        if (!artifact) {
+          artifactTitle.textContent = "No downstream task result yet.";
+          artifactSummary.textContent = "After the governed payment step, the product should show what concrete output the workflow actually produced.";
+          artifactList.innerHTML = '<div class="artifact-pill">Waiting for run</div>';
+          artifactShowcase.innerHTML = "";
+          return;
+        }
+
+        artifactTitle.textContent = `${artifact.title} (${artifact.artifactType})`;
+        artifactSummary.textContent = artifact.summary;
+
+        const deliverables = artifact.deliverables ?? artifact.lanes?.map((lane) => `${lane.role}: ${lane.vendor}`) ?? [];
+        artifactList.innerHTML = [
+          `<div class="artifact-pill">Artifact ${artifact.artifactId}</div>`,
+          `<div class="artifact-pill">Generated ${artifact.generatedAt}</div>`,
+          ...deliverables.map((item) => `<div class="artifact-pill">${item}</div>`)
+        ].join("");
+
+        if (artifact.artifactType === "research_brief") {
+          artifactShowcase.innerHTML = `
+            ${(artifact.sections || []).map((section) => `
+              <div class="artifact-block">
+                <span>${section.title}</span>
+                <strong>${section.value}</strong>
+              </div>
+            `).join("")}
+            <div class="artifact-block">
+              <span>Highlights</span>
+              <p>${(artifact.highlights || []).join(" ")}</p>
+            </div>
+          `;
+          return;
+        }
+
+        if (artifact.artifactType === "benchmark_result") {
+          artifactShowcase.innerHTML = `
+            ${(artifact.metrics || []).map((metric) => `
+              <div class="artifact-block">
+                <span>${metric.label}</span>
+                <strong>${metric.value}</strong>
+              </div>
+            `).join("")}
+            <div class="artifact-block">
+              <span>Recommendation</span>
+              <p>${artifact.recommendation}</p>
+            </div>
+          `;
+          return;
+        }
+
+        if (artifact.artifactType === "operations_bundle") {
+          artifactShowcase.innerHTML = `
+            ${(artifact.stack || []).map((item) => `
+              <div class="artifact-block">
+                <span>${item.label}</span>
+                <strong>${item.value}</strong>
+              </div>
+            `).join("")}
+            <div class="artifact-block">
+              <span>Launch readiness</span>
+              <p>${artifact.readiness}</p>
+            </div>
+          `;
+          return;
+        }
+
+        if (artifact.artifactType === "portfolio_run") {
+          artifactShowcase.innerHTML = `
+            ${(artifact.lanes || []).map((lane) => `
+              <div class="artifact-block">
+                <span>${lane.role}</span>
+                <strong>${lane.vendor}</strong>
+                <p>${lane.amount} • ${lane.category} • receipt ${lane.receiptId}</p>
+              </div>
+            `).join("")}
+          `;
+          return;
+        }
+
+        artifactShowcase.innerHTML = `
+          <div class="artifact-block">
+            <span>Workflow Output</span>
+            <p>${artifact.summary}</p>
+          </div>
+        `;
+      }
+
+      function buildLiveActivities(task, budget, policy) {
+        const budgetLabel = `${budget} USD`;
+        return [
+          {
+            mode: "live",
+            title: "Parsing task",
+            body: `The agent is extracting the objective from: "${task}"`
+          },
+          {
+            mode: "",
+            title: "Checking whether paid action is needed",
+            body: "The agent is deciding whether a premium API, dataset, or SaaS tool is required to complete the task."
+          },
+          {
+            mode: "",
+            title: "Reading spend constraints",
+            body: `CashCat is loading a max spend of ${budgetLabel} and policy: ${policy}`
+          },
+          {
+            mode: "",
+            title: "Preparing governed payment request",
+            body: "If a paid action is justified, the agent will convert its plan into a bounded payment request for CashCat."
+          }
+        ];
+      }
+
+      function buildFinalActivities(result) {
+        const plannerResult = result.plannerResult;
+        const demoResult = result.demoResult;
+        const vendorLabel = plannerResult.vendor.replace(/_/g, " ");
+        const approvalNeeded = demoResult.paymentIntent.status === "needs_approval";
+
+        return [
+          {
+            mode: "pass",
+            title: "Task understood",
+            body: `The agent recognized that the task requires external paid resources to complete effectively.`
+          },
+          {
+            mode: "pass",
+            title: "Paid action selected",
+            body: `The agent chose ${vendorLabel} as the best fit and proposed ${plannerResult.amount} USD in the ${plannerResult.category} category.`
+          },
+          {
+            mode: approvalNeeded ? "warn" : "pass",
+            title: "CashCat applied controls",
+            body: approvalNeeded
+              ? "The request fits the budget, but the amount crosses the approval threshold, so CashCat routed it for approval."
+              : "The request fits the budget and category rules, so CashCat allowed it to proceed without extra approval."
+          },
+          {
+            mode: "pass",
+            title: "Proof and receipt generated",
+            body: `Spend proof ${demoResult.spendProof.proofId} and receipt ${demoResult.executionReceipt.receiptId} were attached to the run.`
+          }
+        ];
+      }
+
+      function shouldUseOrchestration(task, budget) {
+        const normalizedTask = task.toLowerCase();
+        const parsedBudget = Number.parseFloat(budget || "0");
+
+        return (
+          parsedBudget >= 100 ||
+          normalizedTask.includes("workflow") ||
+          normalizedTask.includes("resources") ||
+          normalizedTask.includes("software") ||
+          normalizedTask.includes("cloud") ||
+          normalizedTask.includes("operations") ||
+          normalizedTask.includes("launch")
+        );
+      }
+
+      function parseApprovalThreshold(policy, fallbackBudget) {
+        const match = policy.match(/above\s+(\d+(?:\.\d+)?)/i);
+        if (match) {
+          return Number.parseFloat(match[1]).toFixed(2);
+        }
+
+        const parsedBudget = Number.parseFloat(fallbackBudget || "0");
+        return Number.isFinite(parsedBudget) && parsedBudget > 0 ? (parsedBudget * 0.1).toFixed(2) : "50.00";
+      }
+
+      function renderControls(plannerResult, demoResult) {
+        const amount = plannerResult?.amount ?? "0.00";
+        const status = demoResult?.paymentIntent?.status ?? "pending";
+        const approvalLabel = status === "needs_approval" ? "Required" : status === "approved" ? "Not required" : "Pending";
+        const decisionClass = status === "needs_approval" ? "warn" : status === "approved" ? "pass" : "fail";
+
+        controlsGrid.innerHTML = `
+          <div class="control pass"><span>Budget</span><strong>${budgetInput.value} USD</strong></div>
+          <div class="control ${decisionClass}"><span>Approval</span><strong>${approvalLabel}</strong></div>
+          <div class="control pass"><span>Primary Funds</span><strong>Protected</strong></div>
+          <div class="control ${decisionClass}"><span>Decision</span><strong>${status.replace(/_/g, " ")}</strong></div>
+          <div class="control pass"><span>Proposed Spend</span><strong>${amount} USD</strong></div>
+          <div class="control pass"><span>Category</span><strong>${plannerResult?.category ?? "api"}</strong></div>
+        `;
+      }
+
+      function renderPortfolioControls(result) {
+        const fundingPlan = result.fundingPlan;
+        const decisionClass = fundingPlan.status === "portfolio_needs_review" ? "warn" : "pass";
+
+        controlsGrid.innerHTML = `
+          <div class="control pass"><span>Portfolio Budget</span><strong>${result.coordinator.totalBudget} ${result.coordinator.currency}</strong></div>
+          <div class="control ${decisionClass}"><span>Portfolio Status</span><strong>${fundingPlan.status.replace(/_/g, " ")}</strong></div>
+          <div class="control pass"><span>Delegated Agents</span><strong>${result.coordinator.delegatedAgents}</strong></div>
+          <div class="control ${decisionClass}"><span>Approval Gate</span><strong>Above ${result.coordinator.approvalThreshold} ${result.coordinator.currency}</strong></div>
+          <div class="control pass"><span>Total Requested</span><strong>${fundingPlan.requestedTotal} ${result.coordinator.currency}</strong></div>
+          <div class="control pass"><span>Funds</span><strong>Protected and delegated</strong></div>
+        `;
+      }
+
+      function renderFlow(result) {
+        const plannerResult = result.plannerResult;
+        const demoResult = result.demoResult;
+        const status = demoResult.paymentIntent.status;
+        const vendorLabel = plannerResult.vendor.replace(/_/g, " ");
+
+        taskTitle.textContent = "The agent received the task and planned a paid action.";
+        taskBody.textContent = result.agentTask.task;
+        setAgentStatus("pass", "Proposal ready");
+        runModeNote.textContent = "Single agent run. One agent handled planning, governed spend, and downstream task output.";
+        aiDecisionTitle.textContent = `The AI proposes buying ${vendorLabel} for ${plannerResult.amount} USD.`;
+        aiDecisionBody.textContent = `${plannerResult.reasoning} Purpose: ${plannerResult.purpose}`;
+        renderActivities(buildFinalActivities(result));
+        metricVendor.textContent = vendorLabel;
+        metricAmount.textContent = `${plannerResult.amount} USD`;
+        metricCategory.textContent = plannerResult.category;
+        metricConfidence.textContent = `${Math.round((plannerResult.confidence ?? 0) * 100)}%`;
+
+        renderControls(plannerResult, demoResult);
+
+        resultTitle.textContent =
+          status === "needs_approval"
+            ? "CashCat created the spend request and routed it to approval."
+            : status === "approved"
+              ? "CashCat approved the spend request."
+              : "CashCat blocked the spend request.";
+
+        resultBody.textContent =
+          `Proof status: ${demoResult.apip.verificationResult.valid ? "verified" : "not verified"}. ` +
+          `Intent status: ${status.replace(/_/g, " ")}. ` +
+          `Receipt: ${demoResult.executionReceipt.receiptId}.`;
+        resultMeta.textContent = `Spend proof ${demoResult.spendProof.proofId} linked to receipt ${demoResult.executionReceipt.receiptId}.`;
+        modelEvidence.textContent = `${result.plannerEvidence.model} via ${result.plannerEvidence.provider}`;
+        intentEvidence.textContent = demoResult.paymentIntent.id;
+        receiptEvidence.textContent = demoResult.executionReceipt.receiptId;
+        proofEvidence.textContent = demoResult.spendProof.proofId;
+        renderArtifact(result.workflowResult ?? demoResult.downstreamArtifact);
+        renderEventLog([
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Model decision recorded",
+            body: `Planner response came from ${result.plannerEvidence.model} (${result.plannerEvidence.provider}) and was recorded at ${result.plannerEvidence.decisionAt}.`
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Payment intent created",
+            body: `${demoResult.paymentIntent.id} was created for ${plannerResult.amount} USD in the ${plannerResult.category} category.`
+          },
+          {
+            time: timestampLabel(),
+            mode: status === "needs_approval" ? "warn" : "pass",
+            title: "Policy evaluation completed",
+            body: status === "needs_approval"
+              ? "The request fit the delegated budget, but CashCat routed it through the approval gate."
+              : "The request fit the policy rules and was cleared without additional review."
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Workflow output produced",
+            body: `The paid workflow produced artifact ${(result.workflowResult ?? demoResult.downstreamArtifact).artifactId}.`
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Receipt generated",
+            body: `Execution receipt ${demoResult.executionReceipt.receiptId} was linked to this governed spend request.`
+          },
+          {
+            time: timestampLabel(),
+            mode: demoResult.apip.verificationResult.valid ? "pass" : "fail",
+            title: "Proof verification returned",
+            body: demoResult.apip.verificationResult.valid
+              ? `Spend proof ${demoResult.spendProof.proofId} verified successfully.`
+              : "Verification did not pass for the generated spend proof."
+          }
+        ]);
+
+        technicalOutput.textContent = JSON.stringify(result, null, 2);
+      }
+
+      function renderMultiFlow(result) {
+        const agentLabels = result.agentRuns.map((run) => run.role).join(", ");
+        const topRun = result.agentRuns[0];
+        const decisionClass = result.fundingPlan.status === "portfolio_needs_review" ? "warn" : "pass";
+
+        taskTitle.textContent = "The coordinator accepted the task and opened multiple spend lanes.";
+        taskBody.textContent = result.coordinator.task;
+        setAgentStatus(decisionClass, "Orchestration ready");
+        runModeNote.textContent = `Orchestration mode. CashCat activated ${result.coordinator.delegatedAgents} specialist agents because the task required multiple paid resource lanes.`;
+        aiDecisionTitle.textContent = `The coordinator delegated work to ${result.coordinator.delegatedAgents} specialist agents.`;
+        aiDecisionBody.textContent = `CashCat split the task across ${agentLabels}. Each specialist received a bounded budget and returned its own governed spend proposal.`;
+        renderActivities([
+          {
+            mode: "pass",
+            title: "Top-level workflow understood",
+            body: "The coordinator recognized that the task required multiple kinds of paid resources instead of a single purchase."
+          },
+          {
+            mode: "pass",
+            title: "Budgets and permissions delegated",
+            body: `CashCat issued bounded authority to ${result.coordinator.delegatedAgents} specialist agents under a shared budget of ${result.coordinator.totalBudget} ${result.coordinator.currency}.`
+          },
+          {
+            mode: decisionClass,
+            title: "Parallel spend proposals returned",
+            body: `The specialists requested ${result.fundingPlan.requestedTotal} ${result.coordinator.currency} across data, software, and infrastructure lanes.`
+          },
+          {
+            mode: "pass",
+            title: "Portfolio evidence generated",
+            body: "Each lane returned its own receipt and spend proof while the portfolio remained under central governance."
+          }
+        ]);
+        metricVendor.textContent = topRun.plannerResult.vendor.replace(/_/g, " ");
+        metricAmount.textContent = `${result.fundingPlan.requestedTotal} ${result.coordinator.currency}`;
+        metricCategory.textContent = "multi-agent";
+        metricConfidence.textContent = `${result.agentRuns.length} lanes`;
+
+        renderPortfolioControls(result);
+
+        resultTitle.textContent =
+          result.fundingPlan.status === "portfolio_needs_review"
+            ? "CashCat routed the orchestrated portfolio for review."
+            : "CashCat kept the orchestrated portfolio inside autonomous limits.";
+        resultBody.textContent =
+          `Coordinator: ${result.coordinator.coordinatorAgentId}. ` +
+          `Parallel lanes: ${result.coordinator.delegatedAgents}. ` +
+          `Aggregate requested spend: ${result.fundingPlan.requestedTotal} ${result.coordinator.currency}.`;
+        resultMeta.textContent = `Sample lane receipt ${topRun.demoResult.executionReceipt.receiptId} with planner model ${topRun.plannerResult.model}.`;
+        modelEvidence.textContent = `${topRun.plannerResult.model} via ${topRun.plannerResult.provider}`;
+        intentEvidence.textContent = topRun.demoResult.paymentIntent.id;
+        receiptEvidence.textContent = topRun.demoResult.executionReceipt.receiptId;
+        proofEvidence.textContent = topRun.demoResult.spendProof.proofId;
+        renderArtifact(result.workflowResult);
+        renderEventLog([
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Model-backed orchestration recorded",
+            body: `Specialist lanes produced model decisions using ${topRun.plannerResult.model} on ${topRun.plannerResult.provider}.`
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Coordinator created delegated budgets",
+            body: `${result.coordinator.coordinatorAgentId} split ${result.coordinator.totalBudget} ${result.coordinator.currency} across ${result.coordinator.delegatedAgents} specialist agents.`
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Specialist agents returned payment intents",
+            body: `The portfolio produced ${result.coordinator.delegatedAgents} governed payment lanes with ${result.fundingPlan.requestedTotal} ${result.coordinator.currency} in aggregate requested spend.`
+          },
+          {
+            time: timestampLabel(),
+            mode: result.fundingPlan.status === "portfolio_needs_review" ? "warn" : "pass",
+            title: "Portfolio governance applied",
+            body: result.fundingPlan.status === "portfolio_needs_review"
+              ? "CashCat marked the portfolio for review because the aggregate workflow crossed the delegated approval gate."
+              : "CashCat kept the workflow portfolio inside autonomous operating limits."
+          },
+          {
+            time: timestampLabel(),
+            mode: "pass",
+            title: "Portfolio evidence generated",
+            body: `Sample lane proof ${topRun.demoResult.spendProof.proofId} and receipt ${topRun.demoResult.executionReceipt.receiptId} were generated as evidence.`
+          }
+        ]);
+
+        technicalOutput.textContent = JSON.stringify(result, null, 2);
+      }
+
+      async function runFlow() {
+        setRunMode("live-run");
+        runFlowButton.disabled = true;
+        runFlowButton.textContent = "Sending...";
+        taskTitle.textContent = "The agent is reading the task.";
+        taskBody.textContent = taskInput.value;
+        const useOrchestration = shouldUseOrchestration(taskInput.value, budgetInput.value);
+        setAgentStatus("live", "Understanding task");
+        runModeNote.textContent = useOrchestration
+          ? "Complex workflow detected. CashCat is preparing delegated spend lanes for specialist agents."
+          : "Focused task detected. CashCat is keeping this run in a single agent lane.";
+        showThinking(
+          useOrchestration
+            ? "The coordinator is breaking this request into specialist workstreams, assigning bounded budgets, and preparing parallel spend lanes."
+            : "The model is parsing your instruction, deciding whether paid resources are needed, and preparing a governed spend proposal."
+        );
+        aiDecisionTitle.textContent = "The AI is evaluating what it needs to buy.";
+        aiDecisionBody.textContent = "CashCat is waiting for the model to return a spend proposal.";
+        renderActivities([]);
+        metricVendor.textContent = "Scanning";
+        metricAmount.textContent = "Estimating";
+        metricCategory.textContent = "Classifying";
+        metricConfidence.textContent = "Scoring";
+        resultTitle.textContent = "No execution result yet";
+        resultBody.textContent = "The spend request has not been evaluated yet.";
+        resultMeta.textContent = "No receipt or proof yet.";
+        modelEvidence.textContent = "Pending";
+        intentEvidence.textContent = "Pending";
+        receiptEvidence.textContent = "Pending";
+        proofEvidence.textContent = "Pending";
+        renderArtifact(null);
+        renderEventLog([
+          {
+            time: timestampLabel(),
+            mode: "live",
+            title: "Task accepted",
+            body: "The agent runtime accepted the task and started preparing a governed spend decision."
+          }
+        ]);
+        technicalOutput.textContent = "Running live agent workflow...";
+
+        const payload = {
+          task: taskInput.value,
+          principalId: "pr_demo_founder",
+          agentId: "ag_research_assistant",
+          naturalLanguagePolicy: policyInput.value,
+          maxAmount: budgetInput.value,
+          currency: "USD"
+        };
+
+        try {
+          await sleep(900);
+          await revealActivities(buildLiveActivities(taskInput.value, budgetInput.value, policyInput.value), 500);
+          setAgentStatus("live", "Selecting paid action");
+          aiDecisionBody.textContent = useOrchestration
+            ? "The coordinator is deciding whether this task needs multiple specialist agents with separate budgets and permissions."
+            : "The model is deciding whether a paid API, dataset, or tool is required to complete the task.";
+          await revealActivities([
+            {
+              mode: "pass",
+              title: "Task parsed",
+              body: `The agent identified the main objective and extracted candidate paid actions from the task.`
+            },
+            {
+              mode: "live",
+              title: useOrchestration ? "Deciding whether to orchestrate specialists" : "Selecting a paid resource",
+              body: useOrchestration
+                ? "The system is deciding whether this task should be split across research, tooling, and compute agents."
+                : "The agent is comparing categories like API, dataset, and SaaS tools to find the best next action."
+            },
+            {
+              mode: "",
+              title: "Checking spend constraints",
+              body: `Budget is ${budgetInput.value} USD. Approval policy is loaded before any spend request is created.`
+            },
+            {
+              mode: "",
+              title: "Waiting for governed execution",
+              body: "Once the AI selects a vendor and amount, CashCat will decide whether the spend can proceed."
+            }
+          ], 450);
+          showThinking(
+            useOrchestration
+              ? "Specialist agents are now planning their own spend requests while CashCat prepares portfolio-level controls."
+              : "The AI has identified a likely vendor and amount. CashCat is now checking budget, category, approval threshold, and proof requirements."
+          );
+          await sleep(1300);
+          setAgentStatus("live", useOrchestration ? "Launching orchestration" : "Sending proposal to CashCat");
+          resultBody.textContent = useOrchestration
+            ? "CashCat is opening delegated spend lanes and assigning authority to specialist agents."
+            : "CashCat is checking budget, category, and approval rules.";
+          await revealEvents([
+            {
+              time: timestampLabel(),
+              mode: "pass",
+              title: "Task parsed",
+              body: useOrchestration
+                ? "The coordinator recognized a multi-resource workflow and prepared delegated spend lanes."
+                : "The agent translated the task into a candidate paid action."
+            },
+            {
+              time: timestampLabel(),
+              mode: "live",
+              title: useOrchestration ? "Delegated authority being issued" : "Policy checks running",
+              body: useOrchestration
+                ? "CashCat is issuing bounded budgets and permissions to specialist agents."
+                : "CashCat is checking budget, category, approval threshold, and proof requirements."
+            }
+          ], 420);
+          await revealActivities([
+            {
+              mode: "pass",
+              title: "Task parsed",
+              body: "The agent translated the natural-language request into a candidate paid action."
+            },
+            {
+              mode: "pass",
+              title: useOrchestration ? "Coordinator prepared delegated lanes" : "Spend proposal prepared",
+              body: useOrchestration
+                ? "The coordinator has split the mission into specialist lanes and is assigning each a separate bounded mandate."
+                : "The AI has selected a likely vendor, amount, and category for the requested task."
+            },
+            {
+              mode: "live",
+              title: useOrchestration ? "CashCat is governing multiple concurrent requests" : "CashCat is governing the request",
+              body: useOrchestration
+                ? "Budget allocation, per-lane authority, approval threshold, and proof generation are being applied across multiple agents."
+                : "Budget limit, category restrictions, approval threshold, and proof generation are being applied now."
+            },
+            {
+              mode: "",
+              title: "Preparing final receipt",
+              body: "The system will attach proof and a receipt once the run outcome is determined."
+            }
+          ], 420);
+
+          const result = useOrchestration
+            ? window.CashCatSiteData.buildStaticMultiAgentFlow({
+                task: taskInput.value,
+                totalBudget: budgetInput.value,
+                approvalThreshold: parseApprovalThreshold(policyInput.value, budgetInput.value),
+                currency: "USD"
+              })
+            : window.CashCatSiteData.buildStaticAgentFlow(payload);
+          hideThinking();
+          if (useOrchestration) {
+            renderMultiFlow(result);
+          } else {
+            renderFlow(result);
+          }
+        } catch (error) {
+          hideThinking();
+          taskTitle.textContent = "The run did not complete.";
+          taskBody.textContent = taskInput.value;
+          setAgentStatus("fail", "Run failed");
+          aiDecisionTitle.textContent = "The static demo could not complete the run.";
+          aiDecisionBody.textContent = "Reload the page and try again. This hackathon build now runs fully from the public repo without calling the local AgentWallet service.";
+          renderActivities([
+            {
+              mode: "fail",
+              title: "Run failed before completion",
+              body: "The agent could not finish the governed payment workflow because the backend or model endpoint was unavailable."
+            }
+          ]);
+          resultTitle.textContent = "No result available";
+          resultBody.textContent = error && error.message ? error.message : "Unknown error";
+          resultMeta.textContent = "No receipt or proof generated.";
+          modelEvidence.textContent = "Unavailable";
+          intentEvidence.textContent = "Unavailable";
+          receiptEvidence.textContent = "Unavailable";
+          proofEvidence.textContent = "Unavailable";
+          renderArtifact(null);
+          renderEventLog([
+            {
+              time: timestampLabel(),
+              mode: "fail",
+              title: "Execution stopped",
+              body: error && error.message ? error.message : "The runtime could not complete the governed spend flow."
+            }
+          ]);
+          technicalOutput.textContent = JSON.stringify({ error: resultBody.textContent }, null, 2);
+        } finally {
+          runFlowButton.disabled = false;
+          runFlowButton.textContent = "Send to Agent";
+        }
+      }
+
+      promptButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          taskInput.value = button.dataset.task;
+          taskInput.focus();
+        });
+      });
+
+      runFlowButton.addEventListener("click", runFlow);
+    </script>
+  </body>
+</html>

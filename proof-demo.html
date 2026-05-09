@@ -795,14 +795,14 @@
   <body>
     <main class="page">
       <nav class="topbar">
-        <a class="brand" href="/">
+        <a class="brand" href="./index.html">
           <span class="mark"></span>
           Agent Finance OS
         </a>
         <div class="top-actions">
-          <a class="link-button" href="/">Landing page</a>
-          <a class="link-button" href="/health">Health</a>
-          <a class="link-button" href="/v1/demo/first-wedge-page">Reload demo</a>
+          <a class="link-button" href="./index.html">Landing page</a>
+          <a class="link-button" href="./api.html">API</a>
+          <a class="link-button" href="./proof-demo.html">Reload demo</a>
         </div>
       </nav>
 
@@ -845,8 +845,8 @@
 
           <button id="runButton">Mint Spend Cell and run spend</button>
           <p class="hint">
-            The page calls <code>/v1/demo/first-wedge-flow</code>. If it fails, the backend is not running
-            or the page was opened directly as a local file instead of through the app.
+            This proof page now runs entirely from the public hackathon repo. It no longer depends on
+            the local AgentWallet backend.
           </p>
         </aside>
 
@@ -955,6 +955,7 @@
       </section>
     </main>
 
+    <script src="./site-data.js"></script>
     <script>
       const runButton = document.getElementById("runButton");
       const cards = document.getElementById("cards");
@@ -1152,40 +1153,29 @@
         try {
           renderMandateDecision();
           const animation = animateRuntime();
-          const response = await fetch("/v1/demo/first-wedge-flow", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
+          const result = window.CashCatSiteData.buildStaticAgentFlow({
+            task: "Buy premium search results and a research dataset under a bounded budget.",
+            principalId: payload.principalId,
+            agentId: payload.agentId,
+            naturalLanguagePolicy: payload.naturalLanguagePolicy,
+            maxAmount: payload.spendAmount,
+            category: payload.category,
+            currency: "USD"
           });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
-          }
-
-          const result = await response.json();
           await animation;
 
           summary.innerHTML =
             "<strong>Runtime verified.</strong> The important point is not that a JSON object was created. The point is that a Source Vault stayed sealed, a Spend Cell was minted, and the system can prove why the spend was allowed.";
 
-          renderStory(result);
+          renderStory(result.demoResult);
 
           const artifactMap = [
-            ["Compiled Policy", result.compiledPolicy],
-            ["Session Wallet", result.sessionWallet],
-            ["Session Spend Key", {
-              id: result.sessionKey.id,
-              scopes: result.sessionKey.scopes,
-              expiresAt: result.sessionKey.expiresAt
-            }],
-            ["Payment Intent", result.paymentIntent],
-            ["Capability Proof", result.capabilityProof],
-            ["Spend Proof", result.spendProof],
-            ["Execution Receipt", result.executionReceipt],
-            ["APIP Verification", result.apip.verificationResult]
+            ["Compiled Policy", result.demoResult.compiledPolicy],
+            ["Planner Evidence", result.plannerEvidence],
+            ["Payment Intent", result.demoResult.paymentIntent],
+            ["Spend Proof", result.demoResult.spendProof],
+            ["Execution Receipt", result.demoResult.executionReceipt],
+            ["Workflow Result", result.workflowResult]
           ];
 
           for (const [title, value] of artifactMap) {
@@ -1194,7 +1184,7 @@
         } catch (error) {
           summary.classList.add("error");
           summary.innerHTML =
-            "<strong>Demo failed to run.</strong> Load this page through the running app at <code>/v1/demo/first-wedge-page</code>, then make sure the backend server is up. " +
+            "<strong>Demo failed to run.</strong> This public proof page is expected to run statically from the hackathon repository. " +
             "<br><br>" +
             (error && error.message ? error.message : "Unknown error");
           console.error(error);

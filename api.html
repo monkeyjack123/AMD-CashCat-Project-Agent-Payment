@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CashCat | API & Integration</title>
+    <style>
+      :root {
+        --bg: #03060b;
+        --panel: rgba(9, 17, 31, 0.82);
+        --panel-2: rgba(13, 28, 50, 0.9);
+        --text: #eff8ff;
+        --muted: #91a6bb;
+        --soft: #c6d9ea;
+        --line: rgba(145, 184, 224, 0.17);
+        --cyan: #54f0ff;
+        --green: #66ffb6;
+        --blue: #7894ff;
+        --amber: #ffd166;
+        --red: #ff6386;
+        --font-display: "Satoshi", "Neue Haas Grotesk Display", "Avenir Next", "Aptos Display", "Segoe UI Variable Display", sans-serif;
+        --font-body: "Satoshi", "Avenir Next", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+        --font-mono: "Berkeley Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 14% 8%, rgba(84, 240, 255, 0.18), transparent 30%),
+          radial-gradient(circle at 88% 4%, rgba(120, 148, 255, 0.16), transparent 26%),
+          linear-gradient(180deg, #03060b 0%, #081523 46%, #03060b 100%);
+        font-family: var(--font-body);
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 46px 46px;
+        mask-image: linear-gradient(to bottom, black, transparent 84%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .shell {
+        width: min(1440px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 18px 0 56px;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 16px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 13px 16px;
+        border: 1px solid var(--line);
+        border-radius: 26px;
+        background: rgba(3, 8, 14, 0.78);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        font-weight: 720;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .mark {
+        width: 32px;
+        height: 32px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        box-shadow: 0 0 32px rgba(84, 240, 255, 0.36);
+      }
+
+      .top-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .search {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 38px;
+        padding: 0 13px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.035);
+        font-size: 13px;
+      }
+
+      .kbd {
+        padding: 3px 7px;
+        border: 1px solid rgba(145, 184, 224, 0.2);
+        border-radius: 7px;
+        color: var(--soft);
+        background: rgba(1, 8, 12, 0.62);
+        font-family: var(--font-mono);
+        font-size: 11px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 38px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .pill.primary {
+        color: #031018;
+        border: 0;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 0.72fr;
+        gap: 18px;
+        margin: 20px 0;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: var(--panel);
+        box-shadow: 0 26px 86px rgba(0, 0, 0, 0.32);
+        overflow: hidden;
+      }
+
+      .hero-copy {
+        padding: 32px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px 11px;
+        border: 1px solid rgba(84, 240, 255, 0.24);
+        border-radius: 999px;
+        color: var(--cyan);
+        background: rgba(84, 240, 255, 0.07);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--green);
+        box-shadow: 0 0 0 0 rgba(102, 255, 182, 0.65);
+        animation: pulse 1.8s infinite;
+      }
+
+      h1 {
+        max-width: 12ch;
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: clamp(52px, 8vw, 104px);
+        font-weight: 620;
+        line-height: 0.86;
+        letter-spacing: -0.066em;
+      }
+
+      .gradient {
+        color: transparent;
+        background: linear-gradient(120deg, #fff 0%, #9ff8ff 42%, #8dffc9 92%);
+        -webkit-background-clip: text;
+        background-clip: text;
+      }
+
+      .hero-copy p {
+        max-width: 68ch;
+        margin: 22px 0 0;
+        color: var(--soft);
+        font-size: 18px;
+        line-height: 1.7;
+      }
+
+      .quick-card {
+        display: grid;
+        align-content: center;
+        gap: 12px;
+        padding: 20px;
+        background:
+          radial-gradient(circle at 20% 0%, rgba(84, 240, 255, 0.14), transparent 34%),
+          rgba(2, 6, 11, 0.24);
+      }
+
+      .base-url {
+        padding: 16px;
+        border: 1px solid rgba(102, 255, 182, 0.16);
+        border-radius: 20px;
+        background: rgba(1, 8, 12, 0.64);
+        font-family: var(--font-mono);
+        color: #bdefff;
+        font-size: 13px;
+      }
+
+      .quick-card h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 26px;
+        font-weight: 620;
+        letter-spacing: -0.035em;
+      }
+
+      .quick-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        gap: 12px;
+        margin: 18px 0;
+      }
+
+      .resource {
+        min-height: 128px;
+        padding: 16px;
+        border: 1px solid rgba(145, 184, 224, 0.14);
+        border-radius: 22px;
+        background:
+          radial-gradient(circle at 100% 0%, rgba(84, 240, 255, 0.08), transparent 36%),
+          rgba(255, 255, 255, 0.04);
+      }
+
+      .resource span {
+        display: block;
+        margin-bottom: 22px;
+        color: var(--cyan);
+        font-size: 11px;
+        font-weight: 740;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .resource strong {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 16px;
+      }
+
+      .resource p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .docs-layout {
+        display: grid;
+        grid-template-columns: 280px minmax(0, 1fr) 360px;
+        gap: 18px;
+        align-items: start;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 92px;
+        padding: 18px;
+      }
+
+      .sidebar h3 {
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 740;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .menu {
+        display: grid;
+        gap: 8px;
+      }
+
+      .menu-group {
+        display: grid;
+        gap: 7px;
+        margin-bottom: 16px;
+      }
+
+      .menu-title {
+        color: var(--muted);
+        font-size: 10px;
+        font-weight: 760;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .menu a {
+        padding: 11px 12px;
+        border: 1px solid transparent;
+        border-radius: 14px;
+        color: var(--soft);
+        background: rgba(255, 255, 255, 0.025);
+        font-size: 14px;
+      }
+
+      .menu a:hover {
+        border-color: rgba(84, 240, 255, 0.25);
+        color: var(--text);
+      }
+
+      .content {
+        display: grid;
+        gap: 18px;
+      }
+
+      .doc-section {
+        padding: 24px;
+      }
+
+      .doc-section h2 {
+        margin: 0 0 12px;
+        font-family: var(--font-display);
+        font-size: clamp(30px, 4vw, 50px);
+        font-weight: 620;
+        line-height: 0.94;
+        letter-spacing: -0.052em;
+      }
+
+      .doc-section p {
+        margin: 0 0 16px;
+        color: var(--soft);
+        line-height: 1.68;
+      }
+
+      .primitive-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .table {
+        overflow: hidden;
+        border: 1px solid rgba(145, 184, 224, 0.14);
+        border-radius: 18px;
+      }
+
+      .table-row {
+        display: grid;
+        grid-template-columns: 0.72fr 1.28fr;
+        gap: 12px;
+        padding: 13px 15px;
+        border-bottom: 1px solid rgba(145, 184, 224, 0.11);
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .table-row:last-child {
+        border-bottom: 0;
+      }
+
+      .table-row strong {
+        color: var(--text);
+      }
+
+      .table-row span {
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .primitive {
+        padding: 16px;
+        border: 1px solid rgba(145, 184, 224, 0.14);
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .primitive span {
+        display: block;
+        margin-bottom: 9px;
+        color: var(--cyan);
+        font-size: 11px;
+        font-weight: 720;
+        letter-spacing: 0.09em;
+        text-transform: uppercase;
+      }
+
+      .primitive strong {
+        display: block;
+        margin-bottom: 7px;
+        font-size: 17px;
+      }
+
+      .primitive p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .endpoint {
+        display: grid;
+        gap: 12px;
+      }
+
+      .endpoint-row {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 13px;
+        border: 1px solid rgba(145, 184, 224, 0.13);
+        border-radius: 16px;
+        background: rgba(2, 8, 14, 0.5);
+      }
+
+      .method {
+        display: inline-flex;
+        justify-content: center;
+        padding: 7px 9px;
+        border-radius: 10px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .path {
+        font-family: var(--font-mono);
+        color: #bdefff;
+        font-size: 13px;
+      }
+
+      .code-panel {
+        position: sticky;
+        top: 92px;
+        background:
+          radial-gradient(circle at 50% 0%, rgba(84, 240, 255, 0.14), transparent 34%),
+          rgba(1, 8, 12, 0.76);
+      }
+
+      .code-tabs {
+        display: flex;
+        gap: 8px;
+        padding: 14px;
+        border-bottom: 1px solid rgba(145, 184, 224, 0.12);
+      }
+
+      .tab {
+        padding: 8px 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .tab.active {
+        color: #031018;
+        border: 0;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+      }
+
+      pre {
+        max-height: 680px;
+        margin: 0;
+        padding: 18px;
+        overflow: auto;
+        color: #bdefff;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        line-height: 1.62;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .note {
+        padding: 14px 16px;
+        border: 1px solid rgba(255, 209, 102, 0.22);
+        border-radius: 18px;
+        color: #ffe9a8;
+        background: rgba(255, 209, 102, 0.08);
+        line-height: 1.55;
+      }
+
+      .callout {
+        padding: 16px;
+        border: 1px solid rgba(84, 240, 255, 0.18);
+        border-radius: 20px;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(84, 240, 255, 0.1), transparent 34%),
+          rgba(255, 255, 255, 0.035);
+      }
+
+      .callout strong {
+        display: block;
+        margin-bottom: 7px;
+      }
+
+      .callout p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      @keyframes pulse {
+        70% {
+          box-shadow: 0 0 0 10px rgba(102, 255, 182, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(102, 255, 182, 0);
+        }
+      }
+
+      @media (max-width: 1180px) {
+        .hero,
+        .docs-layout,
+        .resource-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar,
+        .code-panel {
+          position: static;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .topbar,
+        .top-links {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .primitive-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="topbar">
+        <a class="brand" href="./index.html">
+          <span class="mark"></span>
+          CashCat
+        </a>
+        <div class="top-links">
+          <span class="search">Integration guide <span class="kbd">API</span></span>
+          <span class="pill">latest</span>
+          <a class="pill" href="./index.html">Product</a>
+          <a class="pill" href="./live-demo.html">Live Demo</a>
+          <a class="pill primary" href="./api.html">API</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="panel hero-copy">
+          <div class="eyebrow"><span class="pulse"></span> API & Integration</div>
+          <h1><span class="gradient">Connect your agents</span> to CashCat.</h1>
+          <p>
+            This page is for builders. It shows the fastest path to connect an agent runtime to
+            CashCat, create governed spend requests, and return proof-linked payment results.
+          </p>
+        </div>
+        <aside class="panel quick-card">
+          <h2>REST API</h2>
+          <div class="base-url">Mode: Public showcase repository</div>
+          <div class="base-url">Reference stack: NestJS + PostgreSQL + AMD-hosted open model planner</div>
+          <p>This page documents the reference integration shape behind the hackathon prototype. The public site itself is now static and self-contained.</p>
+        </aside>
+      </section>
+
+      <section class="resource-grid" aria-label="Developer documentation sections">
+        <a class="resource" href="#quickstart"><span>Start</span><strong>Getting Started</strong><p>Install, run Postgres, submit the first Spend Intent.</p></a>
+        <a class="resource" href="#model"><span>Learn</span><strong>Concepts</strong><p>Source Vault, Spend Cell, Mandate, Intent, Trace.</p></a>
+        <a class="resource" href="#endpoints"><span>Build</span><strong>REST API</strong><p>Production MVP endpoints and request lifecycle.</p></a>
+        <a class="resource" href="#decisions"><span>Control</span><strong>How-To</strong><p>Approve, block, and trace agent spend decisions.</p></a>
+        <a class="resource" href="#trace"><span>Verify</span><strong>Trace Model</strong><p>Inspect reason codes and trace hashes.</p></a>
+        <a class="resource" href="#production"><span>Extend</span><strong>Developer Guide</strong><p>Adapters, idempotency, auth, and production gaps.</p></a>
+      </section>
+
+      <section class="docs-layout">
+        <aside class="panel sidebar">
+          <h3>Menu</h3>
+          <nav class="menu">
+            <div class="menu-group">
+              <span class="menu-title">Getting Started</span>
+              <a href="#quickstart">Quick Start</a>
+              <a href="#install">Installation</a>
+              <a href="#first-intent">First Spend Intent</a>
+            </div>
+            <div class="menu-group">
+              <span class="menu-title">Concepts</span>
+              <a href="#model">Core Model</a>
+              <a href="#lifecycle">Spend Lifecycle</a>
+              <a href="#decisions">Decision Behavior</a>
+            </div>
+            <div class="menu-group">
+              <span class="menu-title">Reference</span>
+              <a href="#endpoints">REST Endpoints</a>
+              <a href="#trace">Spend Trace</a>
+              <a href="#production">Developer Guide</a>
+            </div>
+          </nav>
+        </aside>
+
+        <div class="content">
+          <section id="quickstart" class="panel doc-section">
+            <h2>Quick Start</h2>
+            <p>
+              The fastest production-MVP path is to use the seeded demo objects. A Spend Intent below
+              the approval threshold is approved automatically and emits a Spend Trace.
+            </p>
+            <div class="note">This public repo showcases the integration surface and product concepts. Production persistence and live settlement stay in the private implementation path.</div>
+          </section>
+
+          <section id="install" class="panel doc-section">
+            <h2>Installation</h2>
+            <p>
+              Agent Finance OS is currently a local production-MVP control plane. It uses NestJS for the
+              API surface and PostgreSQL for durable Source Vault, Spend Cell, Spend Mandate, Spend
+              Intent, and Spend Trace records.
+            </p>
+            <div class="table">
+              <div class="table-row"><strong>Runtime</strong><span>Node.js with the compiled NestJS app.</span></div>
+              <div class="table-row"><strong>Database</strong><span>PostgreSQL initialized from `database/schema.sql` and `database/seed.sql`.</span></div>
+              <div class="table-row"><strong>Docs</strong><span>This page is the public-facing integration reference for the showcase build.</span></div>
+            </div>
+          </section>
+
+          <section id="first-intent" class="panel doc-section">
+            <h2>First Spend Intent</h2>
+            <p>
+              A Spend Intent is the first real action an agent takes. The runtime evaluates it against
+              the Spend Cell boundary and Spend Mandate rules before any money movement can happen.
+            </p>
+            <div class="callout">
+              <strong>Core invariant</strong>
+              <p>The Source Vault remains sealed. The agent can only act through a Spend Cell, and every decision creates a Spend Trace.</p>
+            </div>
+          </section>
+
+          <section id="model" class="panel doc-section">
+            <h2>Core Model</h2>
+            <p>The API is built around five primitives. These are product concepts, not generic wallet labels.</p>
+            <div class="primitive-grid">
+              <article class="primitive"><span>01</span><strong>Source Vault</strong><p>The sealed primary money source controlled by a human or organization.</p></article>
+              <article class="primitive"><span>02</span><strong>Spend Cell</strong><p>A bounded money container for one agent workflow, budget, and expiry window.</p></article>
+              <article class="primitive"><span>03</span><strong>Spend Mandate</strong><p>The executable spend authorization: amount, category, vendor, approval gate.</p></article>
+              <article class="primitive"><span>04</span><strong>Spend Intent</strong><p>The agent's structured request to spend for a specific purpose.</p></article>
+              <article class="primitive"><span>05</span><strong>Spend Trace</strong><p>The verifiable record explaining why a spend was approved, blocked, or escalated.</p></article>
+            </div>
+          </section>
+
+          <section id="endpoints" class="panel doc-section">
+            <h2>REST Endpoints</h2>
+            <p>Use these endpoints for the first production MVP flow.</p>
+            <div class="endpoint">
+              <div class="endpoint-row"><span class="method">POST</span><span class="path">/v1/source-vaults</span></div>
+              <div class="endpoint-row"><span class="method">POST</span><span class="path">/v1/spend-cells</span></div>
+              <div class="endpoint-row"><span class="method">POST</span><span class="path">/v1/spend-mandates</span></div>
+              <div class="endpoint-row"><span class="method">POST</span><span class="path">/v1/spend-intents</span></div>
+              <div class="endpoint-row"><span class="method">POST</span><span class="path">/v1/spend-intents/{id}/approve</span></div>
+              <div class="endpoint-row"><span class="method">GET</span><span class="path">/v1/spend-intents/{id}/traces</span></div>
+            </div>
+          </section>
+
+          <section id="lifecycle" class="panel doc-section">
+            <h2>Spend Lifecycle</h2>
+            <p>
+              The lifecycle is intentionally explicit. This makes the system easier to audit, easier to
+              integrate, and harder to confuse with a generic wallet balance.
+            </p>
+            <div class="table">
+              <div class="table-row"><strong>Mint</strong><span>Create a Spend Cell from a sealed Source Vault.</span></div>
+              <div class="table-row"><strong>Mandate</strong><span>Attach executable limits: amount, category, vendor, expiry, approval threshold.</span></div>
+              <div class="table-row"><strong>Intent</strong><span>The agent submits a structured Spend Intent for a specific purpose.</span></div>
+              <div class="table-row"><strong>Decision</strong><span>The runtime returns approved, needs_approval, or blocked with reason codes.</span></div>
+              <div class="table-row"><strong>Trace</strong><span>A Spend Trace records the authority chain and decision hash.</span></div>
+            </div>
+          </section>
+
+          <section id="decisions" class="panel doc-section">
+            <h2>Decision Behavior</h2>
+            <p>The seeded Spend Mandate allows `api` and `data`, blocks anything above `20 USD`, and requires approval above `10 USD`.</p>
+            <div class="primitive-grid">
+              <article class="primitive"><span>Approved</span><strong>8.00 USD / api</strong><p>Within the Spend Cell and below the approval gate.</p></article>
+              <article class="primitive"><span>Needs Approval</span><strong>12.50 USD / api</strong><p>Within the Spend Cell but above the human approval threshold.</p></article>
+              <article class="primitive"><span>Blocked</span><strong>50.00 USD / api</strong><p>Exceeds the Spend Cell boundary.</p></article>
+              <article class="primitive"><span>Blocked</span><strong>8.00 USD / gaming</strong><p>Category is outside the Spend Mandate.</p></article>
+            </div>
+          </section>
+
+          <section id="trace" class="panel doc-section">
+            <h2>Spend Trace</h2>
+            <p>
+              Every decision writes a Spend Trace linking the Source Vault, Spend Cell, Spend Mandate,
+              Spend Intent, reason codes, and trace hash. This is the artifact that moves Agent Finance
+              OS beyond a wallet UI.
+            </p>
+          </section>
+
+          <section id="production" class="panel doc-section">
+            <h2>Production Gaps</h2>
+            <p>
+              The MVP now has persistence-backed primitives, but the next production-grade work is API
+              keys, idempotency, real settlement adapters, integration tests, migrations, dashboard
+              auth, and append-only trace hardening.
+            </p>
+          </section>
+        </div>
+
+        <aside class="panel code-panel">
+          <div class="code-tabs">
+            <span class="tab active">cURL</span>
+            <span class="tab">TypeScript</span>
+          </div>
+          <pre># Reference implementation example
+# Private runtime: NestJS control plane + Postgres persistence
+
+curl -X POST https://cashcat-runtime.example/v1/spend-intents \
+  -H "Content-Type: application/json" \
+  -d '{
+    "spendCellId": "sc_research_api_demo",
+    "spendMandateId": "sm_research_api_demo",
+    "agentId": "ag_research_assistant",
+    "amount": "8.00",
+    "currency": "USD",
+    "category": "api",
+    "vendor": "open-data-api",
+    "purpose": "Buy API credits for a research workflow"
+  }'
+
+// Expected governed response
+{
+  "decision": {
+    "decision": "approved",
+    "status": "approved",
+    "reasonCodes": ["spend_mandate_satisfied"]
+  },
+  "spendTrace": {
+    "id": "st_...",
+    "decision": "approved",
+    "traceHash": "..."
+  }
+}</pre>
+        </aside>
+      </section>
+    </main>
+  </body>
+</html>
