@@ -1363,6 +1363,7 @@
       </section>
     </main>
 
+    <script src="./config.js"></script>
     <script src="./site-data.js"></script>
     <script>
       const taskInput = document.getElementById("task");
@@ -1399,6 +1400,7 @@
       const eventLog = document.getElementById("eventLog");
       const technicalOutput = document.getElementById("technicalOutput");
       const controlsGrid = document.getElementById("controlsGrid");
+      const apiBase = (window.CashCatConfig && window.CashCatConfig.apiBase ? window.CashCatConfig.apiBase : "").replace(/\/$/, "");
 
       function sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -1416,6 +1418,26 @@
 
       function hideThinking() {
         thinkingStage.classList.remove("visible");
+      }
+
+      async function fetchCashCatResult(path, payload, fallbackFactory) {
+        if (apiBase) {
+          const response = await fetch(`${apiBase}${path}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          return await response.json();
+        }
+
+        return fallbackFactory();
       }
 
       async function revealActivities(sequence, delayMs) {
@@ -1996,13 +2018,23 @@
           ], 420);
 
           const result = useOrchestration
-            ? window.CashCatSiteData.buildStaticMultiAgentFlow({
-                task: taskInput.value,
-                totalBudget: budgetInput.value,
-                approvalThreshold: parseApprovalThreshold(policyInput.value, budgetInput.value),
-                currency: "USD"
-              })
-            : window.CashCatSiteData.buildStaticAgentFlow(payload);
+            ? await fetchCashCatResult(
+                "/api/multi-agent-flow",
+                {
+                  task: taskInput.value,
+                  totalBudget: budgetInput.value,
+                  approvalThreshold: parseApprovalThreshold(policyInput.value, budgetInput.value),
+                  currency: "USD"
+                },
+                () =>
+                  window.CashCatSiteData.buildStaticMultiAgentFlow({
+                    task: taskInput.value,
+                    totalBudget: budgetInput.value,
+                    approvalThreshold: parseApprovalThreshold(policyInput.value, budgetInput.value),
+                    currency: "USD"
+                  })
+              )
+            : await fetchCashCatResult("/api/agent-payment-flow", payload, () => window.CashCatSiteData.buildStaticAgentFlow(payload));
           hideThinking();
           if (useOrchestration) {
             renderMultiFlow(result);
@@ -2014,8 +2046,10 @@
           taskTitle.textContent = "The run did not complete.";
           taskBody.textContent = taskInput.value;
           setAgentStatus("fail", "Run failed");
-          aiDecisionTitle.textContent = "The static demo could not complete the run.";
-          aiDecisionBody.textContent = "Reload the page and try again. This hackathon build now runs fully from the public repo without calling any private local service.";
+          aiDecisionTitle.textContent = apiBase ? "The remote CashCat API could not complete the run." : "The embedded demo could not complete the run.";
+          aiDecisionBody.textContent = apiBase
+            ? `The page is configured to use ${apiBase}. Check the API deployment or reload with a working apiBase.`
+            : "Reload the page and try again. Without a configured remote API, the site falls back to the embedded public demo runtime.";
           renderActivities([
             {
               mode: "fail",

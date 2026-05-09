@@ -1,4 +1,10 @@
-(function () {
+(function (root, factory) {
+  const api = factory();
+  if (typeof module !== "undefined" && module.exports) {
+    module.exports = api;
+  }
+  root.CashCatSiteData = api;
+})(typeof globalThis !== "undefined" ? globalThis : this, function () {
   const MODEL = "qwen2.5-14b";
   const PROVIDER = "amd-vllm";
   let sequence = 1;
@@ -144,7 +150,10 @@
       generatedAt,
       summary: "The AI used governed spend to unlock higher-quality research inputs and returned a concise decision-ready brief.",
       deliverables: ["Executive summary", "Competitive signal scan", "Recommended wedge"],
-      highlights: ["Premium data improved coverage in fast-moving AI infra categories", "Pricing and control layers remain fragmented across the market"],
+      highlights: [
+        "Premium data improved coverage in fast-moving AI infra categories",
+        "Pricing and control layers remain fragmented across the market"
+      ],
       sections: [
         { title: "Key market signal", value: "AI teams want agent autonomy without losing finance controls." },
         { title: "Competitive gap", value: "Most tools stop at recommendation instead of governed execution." },
@@ -347,8 +356,7 @@
       )
     }));
 
-    const requestedTotal = agentRuns
-      .reduce((sum, run) => sum + toNumber(run.plannerResult.amount, 0), 0);
+    const requestedTotal = agentRuns.reduce((sum, run) => sum + toNumber(run.plannerResult.amount, 0), 0);
     const status = requestedTotal > approval ? "portfolio_needs_review" : "portfolio_approved";
 
     return {
@@ -383,8 +391,8 @@
     };
   }
 
-  window.CashCatSiteData = {
+  return {
     buildStaticAgentFlow,
     buildStaticMultiAgentFlow
   };
-})();
+});

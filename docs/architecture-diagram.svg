@@ -1,0 +1,115 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="60" x2="1360" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111A"/>
+      <stop offset="1" stop-color="#0B1824"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#57ECFF"/>
+      <stop offset="1" stop-color="#73FFBA"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7A9FFF"/>
+      <stop offset="1" stop-color="#57ECFF"/>
+    </linearGradient>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <style>
+      .title { fill: #EEF8FF; font: 700 42px 'Segoe UI', Arial, sans-serif; letter-spacing: -0.5px; }
+      .subtitle { fill: #91A8BC; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+      .section { fill: #57ECFF; font: 700 18px 'Segoe UI', Arial, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; }
+      .boxTitle { fill: #EEF8FF; font: 700 24px 'Segoe UI', Arial, sans-serif; }
+      .boxText { fill: #CAD9E8; font: 500 16px 'Segoe UI', Arial, sans-serif; }
+      .small { fill: #91A8BC; font: 500 14px 'Segoe UI', Arial, sans-serif; }
+      .pill { fill: #031018; font: 700 14px 'Segoe UI', Arial, sans-serif; }
+      .arrowText { fill: #57ECFF; font: 700 15px 'Segoe UI', Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="980" rx="32" fill="url(#bg)"/>
+  <circle cx="250" cy="120" r="170" fill="#57ECFF" opacity="0.10" filter="url(#softGlow)"/>
+  <circle cx="1320" cy="160" r="180" fill="#7A9FFF" opacity="0.10" filter="url(#softGlow)"/>
+  <circle cx="1270" cy="820" r="190" fill="#73FFBA" opacity="0.08" filter="url(#softGlow)"/>
+
+  <text x="88" y="92" class="title">CashCat Architecture</text>
+  <text x="88" y="126" class="subtitle">AI Agent Payment OS on GitHub Pages + Public API + AMD Cloud</text>
+
+  <rect x="88" y="170" width="1424" height="112" rx="28" fill="#0E1A2A" stroke="#57ECFF" stroke-opacity="0.22"/>
+  <text x="120" y="213" class="section">Public Experience</text>
+  <text x="120" y="248" class="boxTitle">GitHub Pages Front End</text>
+  <text x="120" y="275" class="boxText">Single task entry, AI thinking timeline, governed spend view, workflow artifact cards.</text>
+  <rect x="1180" y="206" width="272" height="42" rx="21" fill="url(#cyanGlow)"/>
+  <text x="1212" y="233" class="pill">Pages URL + ?apiBase=public-api</text>
+
+  <rect x="88" y="336" width="430" height="230" rx="28" fill="#0E1A2A" stroke="#7A9FFF" stroke-opacity="0.30"/>
+  <text x="120" y="378" class="section">Task Intake</text>
+  <text x="120" y="414" class="boxTitle">Top-Level Agent Task</text>
+  <text x="120" y="446" class="boxText">Input object</text>
+  <text x="120" y="476" class="small">• task</text>
+  <text x="120" y="502" class="small">• maxBudget</text>
+  <text x="120" y="528" class="small">• policyText</text>
+  <text x="120" y="554" class="small">• currency / optional modeHint</text>
+
+  <rect x="584" y="336" width="430" height="230" rx="28" fill="#0E1A2A" stroke="#57ECFF" stroke-opacity="0.30"/>
+  <text x="616" y="378" class="section">Planner Layer</text>
+  <text x="616" y="414" class="boxTitle">Qwen2.5-14B-Instruct</text>
+  <text x="616" y="444" class="boxText">Served through AMD vLLM endpoint</text>
+  <text x="616" y="480" class="small">• decides whether paid action is needed</text>
+  <text x="616" y="506" class="small">• proposes vendor, amount, category</text>
+  <text x="616" y="532" class="small">• returns confidence and reasoning</text>
+  <rect x="820" y="390" width="152" height="34" rx="17" fill="url(#blueGlow)"/>
+  <text x="846" y="412" class="pill">planner output</text>
+
+  <rect x="1080" y="336" width="432" height="230" rx="28" fill="#0E1A2A" stroke="#73FFBA" stroke-opacity="0.30"/>
+  <text x="1112" y="378" class="section">Governed Spend</text>
+  <text x="1112" y="414" class="boxTitle">CashCat Control Layer</text>
+  <text x="1112" y="446" class="boxText">Turns AI intent into governed economic action.</text>
+  <text x="1112" y="480" class="small">• budget limits</text>
+  <text x="1112" y="506" class="small">• approval thresholds</text>
+  <text x="1112" y="532" class="small">• category permissions</text>
+  <text x="1112" y="558" class="small">• payment intent, spend proof, receipt</text>
+
+  <rect x="88" y="632" width="690" height="250" rx="28" fill="#0E1A2A" stroke="#FFD166" stroke-opacity="0.32"/>
+  <text x="120" y="674" class="section">Execution Modes</text>
+  <text x="120" y="710" class="boxTitle">Single Agent or Orchestration</text>
+  <text x="120" y="742" class="small">Single agent:</text>
+  <text x="240" y="742" class="boxText">one planner-runner flow for a bounded purchase.</text>
+  <text x="120" y="780" class="small">Orchestration:</text>
+  <text x="240" y="780" class="boxText">coordinator splits budget and authority across specialist lanes.</text>
+
+  <rect x="126" y="804" width="182" height="42" rx="21" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="164" y="830" class="small">Market Intelligence</text>
+  <rect x="326" y="804" width="182" height="42" rx="21" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="362" y="830" class="small">Tooling Procurement</text>
+  <rect x="526" y="804" width="182" height="42" rx="21" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="567" y="830" class="small">Compute Operations</text>
+
+  <rect x="844" y="632" width="668" height="250" rx="28" fill="#0E1A2A" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="876" y="674" class="section">Outputs</text>
+  <text x="876" y="710" class="boxTitle">Visible Artifacts Returned to the User</text>
+  <text x="876" y="746" class="small">• plannerEvidence (model, provider, raw decision)</text>
+  <text x="876" y="772" class="small">• paymentIntent, spendProof, executionReceipt</text>
+  <text x="876" y="798" class="small">• workflowResult: research_brief / benchmark_result / operations_bundle / portfolio_run</text>
+  <text x="876" y="840" class="boxText">The workflow does not stop at recommendation. It returns a governed outcome and a concrete deliverable.</text>
+
+  <path d="M518 450H560" stroke="#57ECFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M554 440L584 450L554 460" stroke="#57ECFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="524" y="432" class="arrowText">task</text>
+
+  <path d="M1014 450H1056" stroke="#57ECFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1050 440L1080 450L1050 460" stroke="#57ECFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1000" y="432" class="arrowText">payment plan</text>
+
+  <path d="M1296 566V610" stroke="#73FFBA" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1286 604L1296 632L1306 604" stroke="#73FFBA" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="1184" y="604" class="arrowText">receipt + proof + artifact</text>
+
+  <path d="M780 756H824" stroke="#FFD166" stroke-width="4" stroke-linecap="round"/>
+  <path d="M818 746L844 756L818 766" stroke="#FFD166" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="725" y="738" class="arrowText">governed lanes</text>
+</svg>

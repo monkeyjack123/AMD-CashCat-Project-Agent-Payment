@@ -4,6 +4,12 @@ CashCat is a public-safe hackathon repository for an AI agent payments product d
 
 This repository contains only submission-safe materials for the hackathon.
 
+## Rights
+
+- Copyright: CashCat project authors
+- License status: proprietary, all rights reserved
+- Public visibility does not grant reuse rights without permission
+
 ## Track
 
 - AMD Developer Challenge
@@ -42,7 +48,9 @@ This repository contains only submission-safe materials for the hackathon.
 
 ## Supporting Materials
 
+- [docs/ARCHITECTURE_OVERVIEW.md](./docs/ARCHITECTURE_OVERVIEW.md): visual architecture diagram and system summary
 - [docs/AI_ARCHITECTURE.md](./docs/AI_ARCHITECTURE.md): task, planner, governance, and orchestration design
+- [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md): GitHub Pages + public API deployment model
 - [docs/first-wedge-demo-flow.md](./docs/first-wedge-demo-flow.md): public-safe walkthrough of the first wedge
 - [examples/first-wedge-demo-request.json](./examples/first-wedge-demo-request.json): sample request payload
 - [examples/first-wedge-demo-output-sanitized.json](./examples/first-wedge-demo-output-sanitized.json): redacted output example
@@ -62,6 +70,8 @@ This repository contains only submission-safe materials for the hackathon.
 - [showcase/pseudocode/agent-planner-schema.ts](./showcase/pseudocode/agent-planner-schema.ts): planner prompt and output shape
 - [showcase/pseudocode/orchestration-decision.ts](./showcase/pseudocode/orchestration-decision.ts): single-agent vs orchestration routing logic
 - [CashCat-AMD-Track1-Deck.pptx](./CashCat-AMD-Track1-Deck.pptx): current presentation deck
+- [LICENSE](./LICENSE): repository rights statement
+- [NOTICE.md](./NOTICE.md): plain-language usage notice
 
 ## Public Scope
 

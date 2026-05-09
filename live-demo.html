@@ -198,6 +198,7 @@
       </details>
     </main>
 
+    <script src="./config.js"></script>
     <script src="./site-data.js"></script>
     <script>
       const taskInput = document.getElementById("task");
@@ -211,6 +212,7 @@
       const feed = document.getElementById("feed");
       const agentsGrid = document.getElementById("agentsGrid");
       const technicalOutput = document.getElementById("technicalOutput");
+      const apiBase = (window.CashCatConfig && window.CashCatConfig.apiBase ? window.CashCatConfig.apiBase : "").replace(/\/$/, "");
 
       function sleep(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
@@ -284,6 +286,24 @@
         technicalOutput.textContent = JSON.stringify(result, null, 2);
       }
 
+      async function fetchOrchestration(payload) {
+        if (apiBase) {
+          const response = await fetch(`${apiBase}/api/multi-agent-flow`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          return await response.json();
+        }
+
+        return window.CashCatSiteData.buildStaticMultiAgentFlow(payload);
+      }
+
       async function runFlow() {
         runFlowButton.disabled = true;
         runFlowButton.textContent = "Running orchestration...";
@@ -308,7 +328,7 @@
 
         try {
           await sleep(350);
-          const result = window.CashCatSiteData.buildStaticMultiAgentFlow({
+          const result = await fetchOrchestration({
             task: taskInput.value,
             totalBudget: budgetInput.value,
             approvalThreshold: approvalInput.value,

@@ -955,6 +955,7 @@
       </section>
     </main>
 
+    <script src="./config.js"></script>
     <script src="./site-data.js"></script>
     <script>
       const runButton = document.getElementById("runButton");
@@ -966,6 +967,7 @@
       const allowedCategories = new Set(["api", "data"]);
       const maxSpend = 20;
       const approvalThreshold = 10;
+      const apiBase = (window.CashCatConfig && window.CashCatConfig.apiBase ? window.CashCatConfig.apiBase : "").replace(/\/$/, "");
 
       function setStepState(activeIndex) {
         steps.forEach((step, index) => {
@@ -1134,6 +1136,34 @@
         setStepState(steps.length);
       }
 
+      async function fetchProofResult(payload) {
+        if (apiBase) {
+          const response = await fetch(`${apiBase}/api/proof-flow`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          return await response.json();
+        }
+
+        return window.CashCatSiteData.buildStaticAgentFlow({
+          task: "Buy premium search results and a research dataset under a bounded budget.",
+          principalId: payload.principalId,
+          agentId: payload.agentId,
+          naturalLanguagePolicy: payload.naturalLanguagePolicy,
+          maxAmount: payload.spendAmount,
+          category: payload.category,
+          currency: "USD"
+        });
+      }
+
       async function runDemo() {
         runButton.disabled = true;
         runButton.textContent = "Executing runtime...";
@@ -1153,15 +1183,7 @@
         try {
           renderMandateDecision();
           const animation = animateRuntime();
-          const result = window.CashCatSiteData.buildStaticAgentFlow({
-            task: "Buy premium search results and a research dataset under a bounded budget.",
-            principalId: payload.principalId,
-            agentId: payload.agentId,
-            naturalLanguagePolicy: payload.naturalLanguagePolicy,
-            maxAmount: payload.spendAmount,
-            category: payload.category,
-            currency: "USD"
-          });
+          const result = await fetchProofResult(payload);
           await animation;
 
           summary.innerHTML =
@@ -1184,7 +1206,7 @@
         } catch (error) {
           summary.classList.add("error");
           summary.innerHTML =
-            "<strong>Demo failed to run.</strong> This public proof page is expected to run statically from the hackathon repository. " +
+            `<strong>Demo failed to run.</strong> ${apiBase ? `The page is configured to use ${apiBase}.` : "The embedded public runtime also failed."} ` +
             "<br><br>" +
             (error && error.message ? error.message : "Unknown error");
           console.error(error);
