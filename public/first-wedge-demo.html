@@ -1,0 +1,1214 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent Finance OS | Live Runtime Demo</title>
+    <style>
+      :root {
+        --bg: #03060b;
+        --panel: rgba(9, 17, 30, 0.84);
+        --panel-2: rgba(15, 29, 50, 0.72);
+        --text: #eff8ff;
+        --muted: #8da1b7;
+        --line: rgba(143, 183, 224, 0.18);
+        --cyan: #52f0ff;
+        --green: #62ffb0;
+        --blue: #6f8cff;
+        --amber: #ffd166;
+        --red: #ff5f83;
+        --shadow: 0 28px 90px rgba(0, 0, 0, 0.45);
+        --font-display: "Satoshi", "Neue Haas Grotesk Display", "Avenir Next", "Aptos Display", "Segoe UI Variable Display", sans-serif;
+        --font-body: "Satoshi", "Avenir Next", "Segoe UI Variable Text", "Segoe UI", sans-serif;
+        --font-mono: "Berkeley Mono", "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 15% 10%, rgba(82, 240, 255, 0.18), transparent 30%),
+          radial-gradient(circle at 85% 0%, rgba(111, 140, 255, 0.2), transparent 28%),
+          radial-gradient(circle at 50% 90%, rgba(98, 255, 176, 0.13), transparent 30%),
+          linear-gradient(180deg, #03060b 0%, #081423 48%, #03060b 100%);
+        font-family: var(--font-body);
+        font-optical-sizing: auto;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: geometricPrecision;
+      }
+
+      body::before {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        content: "";
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+        background-size: 42px 42px;
+        mask-image: radial-gradient(circle at 50% 20%, black, transparent 72%);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .page {
+        width: min(1320px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 22px 0 60px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 24px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        background: rgba(4, 8, 14, 0.76);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 13px;
+        font-weight: 720;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .mark {
+        width: 30px;
+        height: 30px;
+        border-radius: 11px;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        box-shadow: 0 0 32px rgba(82, 240, 255, 0.36);
+      }
+
+      .top-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .link-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        padding: 0 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.04);
+        font-size: 13px;
+        font-weight: 650;
+      }
+
+      .link-button:hover {
+        color: var(--text);
+        border-color: rgba(82, 240, 255, 0.45);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 0.95fr 1.05fr;
+        gap: 18px;
+        margin-bottom: 18px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 30px;
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero-copy {
+        padding: 30px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 8px 11px;
+        border: 1px solid rgba(82, 240, 255, 0.24);
+        border-radius: 999px;
+        color: var(--cyan);
+        background: rgba(82, 240, 255, 0.07);
+        font-size: 12px;
+        font-weight: 680;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--green);
+        box-shadow: 0 0 0 0 rgba(98, 255, 176, 0.65);
+        animation: pulse 1.7s infinite;
+      }
+
+      h1 {
+        max-width: 10ch;
+        margin: 0;
+        font-family: var(--font-display);
+        font-weight: 620;
+        font-size: clamp(46px, 7vw, 88px);
+        line-height: 0.9;
+        letter-spacing: -0.058em;
+      }
+
+      .hero-copy p {
+        max-width: 58ch;
+        margin: 22px 0 0;
+        color: #c8d8e9;
+        font-size: 17px;
+        line-height: 1.72;
+        letter-spacing: -0.012em;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 18px;
+        background:
+          radial-gradient(circle at 30% 0%, rgba(82, 240, 255, 0.16), transparent 34%),
+          rgba(3, 6, 11, 0.28);
+      }
+
+      .stat {
+        min-height: 128px;
+        padding: 16px;
+        border: 1px solid rgba(143, 183, 224, 0.16);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.045);
+      }
+
+      .stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 650;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 12px;
+        font-size: 31px;
+        font-family: var(--font-display);
+        font-weight: 620;
+        letter-spacing: -0.035em;
+      }
+
+      .stat small {
+        display: block;
+        margin-top: 8px;
+        color: var(--muted);
+        line-height: 1.35;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        gap: 18px;
+      }
+
+      .controls {
+        padding: 22px;
+      }
+
+      .controls h2,
+      .output h2 {
+        margin: 0 0 16px;
+        font-size: 20px;
+        font-family: var(--font-display);
+        font-weight: 620;
+        letter-spacing: -0.025em;
+      }
+
+      label {
+        display: block;
+        margin: 15px 0 7px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 680;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid rgba(143, 183, 224, 0.2);
+        border-radius: 16px;
+        outline: none;
+        color: var(--text);
+        background: rgba(1, 7, 13, 0.68);
+        font: inherit;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: rgba(82, 240, 255, 0.6);
+        box-shadow: 0 0 0 4px rgba(82, 240, 255, 0.08);
+      }
+
+      textarea {
+        min-height: 132px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      button {
+        width: 100%;
+        min-height: 52px;
+        margin-top: 18px;
+        border: 0;
+        border-radius: 18px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        box-shadow: 0 18px 52px rgba(82, 240, 255, 0.22);
+        font: inherit;
+        font-weight: 760;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        cursor: progress;
+        filter: grayscale(0.25);
+        opacity: 0.72;
+      }
+
+      .hint {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .output {
+        padding: 18px;
+      }
+
+      .timeline {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .step {
+        position: relative;
+        min-height: 118px;
+        padding: 13px;
+        border: 1px solid rgba(143, 183, 224, 0.15);
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        overflow: hidden;
+      }
+
+      .step::after {
+        position: absolute;
+        inset: auto 12px 10px 12px;
+        height: 3px;
+        border-radius: 99px;
+        background: rgba(143, 183, 224, 0.14);
+        content: "";
+      }
+
+      .step.active::after,
+      .step.done::after {
+        background: linear-gradient(90deg, var(--cyan), var(--green));
+        box-shadow: 0 0 24px rgba(82, 240, 255, 0.34);
+      }
+
+      .step strong {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 620;
+        letter-spacing: -0.015em;
+      }
+
+      .step span {
+        color: var(--muted);
+        font-size: 12px;
+        line-height: 1.48;
+      }
+
+      .summary {
+        margin-bottom: 14px;
+        padding: 16px;
+        border: 1px solid rgba(98, 255, 176, 0.18);
+        border-radius: 20px;
+        color: #d8fff0;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(98, 255, 176, 0.12), transparent 35%),
+          rgba(1, 8, 12, 0.62);
+        line-height: 1.62;
+      }
+
+      .summary strong {
+        color: var(--green);
+      }
+
+      .comparison-lab {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .lab-card {
+        position: relative;
+        overflow: hidden;
+        min-height: 300px;
+        padding: 18px;
+        border: 1px solid rgba(143, 183, 224, 0.15);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .lab-card.risky {
+        border-color: rgba(255, 95, 131, 0.2);
+        background:
+          radial-gradient(circle at 0% 0%, rgba(255, 95, 131, 0.13), transparent 38%),
+          rgba(255, 255, 255, 0.035);
+      }
+
+      .lab-card.safe {
+        border-color: rgba(98, 255, 176, 0.2);
+        background:
+          radial-gradient(circle at 0% 0%, rgba(98, 255, 176, 0.12), transparent 38%),
+          rgba(255, 255, 255, 0.04);
+      }
+
+      .lab-kicker {
+        display: inline-flex;
+        margin-bottom: 16px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .risky .lab-kicker {
+        color: #ffd7df;
+        background: rgba(255, 95, 131, 0.12);
+        border: 1px solid rgba(255, 95, 131, 0.22);
+      }
+
+      .safe .lab-kicker {
+        color: #d8fff0;
+        background: rgba(98, 255, 176, 0.1);
+        border: 1px solid rgba(98, 255, 176, 0.2);
+      }
+
+      .lab-card h3 {
+        margin: 0 0 10px;
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 620;
+        letter-spacing: -0.035em;
+      }
+
+      .lab-card p {
+        margin: 0;
+        color: #c8d8e9;
+        line-height: 1.58;
+      }
+
+      .risk-list {
+        display: grid;
+        gap: 9px;
+        margin: 18px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .risk-list li {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 11px 12px;
+        border: 1px solid rgba(143, 183, 224, 0.13);
+        border-radius: 15px;
+        background: rgba(1, 7, 13, 0.42);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .risk-list strong {
+        color: var(--text);
+        font-weight: 620;
+      }
+
+      .decision-board {
+        display: grid;
+        grid-template-columns: 0.78fr 1.22fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .verdict {
+        padding: 18px;
+        border: 1px solid rgba(143, 183, 224, 0.15);
+        border-radius: 22px;
+        background: rgba(1, 7, 13, 0.52);
+      }
+
+      .verdict span {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .verdict strong {
+        display: block;
+        margin-bottom: 8px;
+        font-family: var(--font-display);
+        font-size: 30px;
+        font-weight: 620;
+        letter-spacing: -0.04em;
+      }
+
+      .verdict p {
+        margin: 0;
+        color: #c8d8e9;
+        line-height: 1.5;
+      }
+
+      .verdict.auto strong {
+        color: var(--green);
+      }
+
+      .verdict.approval strong {
+        color: var(--amber);
+      }
+
+      .verdict.blocked strong {
+        color: var(--red);
+      }
+
+      .mandate-checks {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .check {
+        padding: 13px;
+        border: 1px solid rgba(143, 183, 224, 0.13);
+        border-radius: 17px;
+        background: rgba(255, 255, 255, 0.04);
+      }
+
+      .check span {
+        display: block;
+        color: var(--muted);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .check strong {
+        display: block;
+        margin-top: 7px;
+        font-size: 15px;
+        font-weight: 640;
+      }
+
+      .check.pass strong {
+        color: var(--green);
+      }
+
+      .check.warn strong {
+        color: var(--amber);
+      }
+
+      .check.fail strong {
+        color: var(--red);
+      }
+
+      .story {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+
+      .story-card {
+        padding: 18px;
+        border: 1px solid rgba(143, 183, 224, 0.15);
+        border-radius: 22px;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(82, 240, 255, 0.09), transparent 36%),
+          rgba(255, 255, 255, 0.04);
+      }
+
+      .story-card h3 {
+        margin: 0 0 10px;
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 620;
+        letter-spacing: -0.025em;
+      }
+
+      .story-card p {
+        margin: 0;
+        color: #c8d8e9;
+        line-height: 1.62;
+      }
+
+      .story-list {
+        display: grid;
+        gap: 10px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .story-list li {
+        display: grid;
+        grid-template-columns: 30px 1fr;
+        gap: 10px;
+        align-items: start;
+        padding: 12px;
+        border: 1px solid rgba(143, 183, 224, 0.13);
+        border-radius: 16px;
+        background: rgba(1, 7, 13, 0.42);
+      }
+
+      .story-list b {
+        display: grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 11px;
+        color: #031018;
+        background: linear-gradient(135deg, var(--cyan), var(--green));
+        font-weight: 760;
+      }
+
+      .story-list strong {
+        display: block;
+        margin-bottom: 3px;
+        font-weight: 640;
+      }
+
+      .story-list span {
+        display: block;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .value-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .value-card {
+        padding: 14px;
+        border: 1px solid rgba(98, 255, 176, 0.15);
+        border-radius: 18px;
+        background: rgba(1, 8, 12, 0.52);
+      }
+
+      .value-card span {
+        display: block;
+        margin-bottom: 7px;
+        color: var(--green);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .value-card strong {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 640;
+      }
+
+      .value-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .evidence-header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 4px 0 12px;
+      }
+
+      .evidence-header h3 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 620;
+        letter-spacing: -0.02em;
+      }
+
+      .evidence-header p {
+        max-width: 62ch;
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .artifact {
+        min-height: 250px;
+        border: 1px solid rgba(143, 183, 224, 0.15);
+        border-radius: 22px;
+        background: rgba(1, 7, 13, 0.68);
+        overflow: hidden;
+      }
+
+      .artifact h3 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 0;
+        padding: 13px 14px;
+        border-bottom: 1px solid rgba(143, 183, 224, 0.13);
+        color: var(--text);
+        background: rgba(255, 255, 255, 0.035);
+        font-size: 12px;
+        font-weight: 680;
+        letter-spacing: 0.075em;
+        text-transform: uppercase;
+      }
+
+      .artifact h3::after {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--green);
+        box-shadow: 0 0 18px rgba(98, 255, 176, 0.6);
+        content: "";
+      }
+
+      .artifact pre {
+        max-height: 300px;
+        margin: 0;
+        padding: 14px;
+        overflow: auto;
+        white-space: pre-wrap;
+        word-break: break-word;
+        color: #bdefff;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        line-height: 1.58;
+      }
+
+      .error {
+        border-color: rgba(255, 95, 131, 0.28);
+        color: #ffe3ea;
+        background:
+          radial-gradient(circle at 0% 0%, rgba(255, 95, 131, 0.14), transparent 35%),
+          rgba(20, 4, 10, 0.72);
+      }
+
+      @keyframes pulse {
+        70% {
+          box-shadow: 0 0 0 10px rgba(98, 255, 176, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(98, 255, 176, 0);
+        }
+      }
+
+      @media (max-width: 1050px) {
+        .hero,
+        .workspace,
+        .timeline,
+        .cards,
+        .story,
+        .value-grid,
+        .comparison-lab,
+        .decision-board,
+        .mandate-checks {
+          grid-template-columns: 1fr;
+        }
+
+        .dashboard {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 640px) {
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <nav class="topbar">
+        <a class="brand" href="/">
+          <span class="mark"></span>
+          Agent Finance OS
+        </a>
+        <div class="top-actions">
+          <a class="link-button" href="/">Landing page</a>
+          <a class="link-button" href="/health">Health</a>
+          <a class="link-button" href="/v1/demo/first-wedge-page">Reload demo</a>
+        </div>
+      </nav>
+
+      <section class="hero">
+        <div class="panel hero-copy">
+          <div class="eyebrow"><span class="pulse"></span> Live agent spend runtime</div>
+          <h1>Watch an agent receive a Spend Cell.</h1>
+          <p>
+            This demo simulates the first commercial wedge: an AI research agent needs to buy a paid
+            API or dataset. The human keeps the Source Vault sealed, mints a Spend Mandate, issues a
+            Spend Cell, creates a Spend Intent, generates a Spend Trace, and verifies the APIP envelope.
+          </p>
+        </div>
+        <div class="panel dashboard">
+          <div class="stat"><span>Capital source</span><strong>Vaulted</strong><small>The human's primary money source stays sealed away from the agent.</small></div>
+          <div class="stat"><span>Control object</span><strong>Mandate</strong><small>Natural language spend intent becomes executable money limits.</small></div>
+          <div class="stat"><span>Verification</span><strong>APIP</strong><small>Portable envelope with proof and verifier result.</small></div>
+          <div class="stat"><span>Agent account</span><strong>Cell</strong><small>A limited money container for one agent workflow.</small></div>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <aside class="panel controls">
+          <h2>Configure Spend Cell</h2>
+
+          <label for="principalId">Principal Id</label>
+          <input id="principalId" value="pr_demo_founder" />
+
+          <label for="agentId">Agent Id</label>
+          <input id="agentId" value="ag_research_assistant" />
+
+          <label for="spendAmount">Spend Amount</label>
+          <input id="spendAmount" value="12.50" />
+
+          <label for="category">Spend Category</label>
+          <input id="category" value="api" />
+
+          <label for="policyText">Natural Language Policy</label>
+          <textarea id="policyText">Allow this research agent to spend up to 20 USD on API and data purchases, and require approval for anything above 10 USD.</textarea>
+
+          <button id="runButton">Mint Spend Cell and run spend</button>
+          <p class="hint">
+            The page calls <code>/v1/demo/first-wedge-flow</code>. If it fails, the backend is not running
+            or the page was opened directly as a local file instead of through the app.
+          </p>
+        </aside>
+
+        <section class="panel output">
+          <h2>Runtime output</h2>
+          <div class="timeline">
+            <div class="step" data-step="0"><strong>1. Policy</strong><span>Human budget instruction becomes machine rules.</span></div>
+            <div class="step" data-step="1"><strong>2. Wallet</strong><span>Runtime issues a session wallet and spend key.</span></div>
+            <div class="step" data-step="2"><strong>3. Intent</strong><span>Agent creates a semantic payment intent.</span></div>
+            <div class="step" data-step="3"><strong>4. Proofs</strong><span>Capability graph and spend proof are generated.</span></div>
+            <div class="step" data-step="4"><strong>5. APIP</strong><span>Envelope is signed and verified.</span></div>
+          </div>
+
+          <div class="summary" id="summary">
+            Waiting for runtime execution.
+          </div>
+
+          <div class="comparison-lab" id="comparisonLab">
+            <div class="lab-card risky">
+              <span class="lab-kicker">Without Agent Finance OS</span>
+              <h3>The agent gets direct money access.</h3>
+              <p>
+                The agent can attempt a purchase, but the system cannot clearly separate the human's
+                primary money source from the agent's action.
+              </p>
+              <ul class="risk-list">
+                <li><strong>Capital isolation</strong><span>missing</span></li>
+                <li><strong>Spend boundary</strong><span>unclear</span></li>
+                <li><strong>Verification artifact</strong><span>none</span></li>
+              </ul>
+            </div>
+            <div class="lab-card safe">
+              <span class="lab-kicker">With Spend Cell</span>
+              <h3>The agent is placed inside a money cell.</h3>
+              <p>
+                The Source Vault stays sealed. The Spend Cell defines how much, why, where, and under
+                what conditions this agent can spend.
+              </p>
+              <ul class="risk-list">
+                <li><strong>Capital isolation</strong><span>Source Vault</span></li>
+                <li><strong>Spend boundary</strong><span>Spend Mandate</span></li>
+                <li><strong>Verification artifact</strong><span>Spend Trace</span></li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="decision-board">
+            <div class="verdict" id="verdict">
+              <span>Mandate decision</span>
+              <strong>Waiting</strong>
+              <p>Run the demo or change the amount/category to see how the Spend Mandate behaves.</p>
+            </div>
+            <div class="mandate-checks" id="mandateChecks">
+              <div class="check"><span>Amount cap</span><strong>Max 20 USD</strong></div>
+              <div class="check"><span>Approval gate</span><strong>Above 10 USD</strong></div>
+              <div class="check"><span>Allowed categories</span><strong>api, data</strong></div>
+              <div class="check"><span>Trace result</span><strong>Pending</strong></div>
+            </div>
+          </div>
+
+          <div class="story" id="story">
+            <div class="story-card">
+              <h3>What you are about to see</h3>
+              <p>
+                A human keeps their Source Vault sealed and gives an AI agent a limited Spend Cell for
+                one job. The agent can spend inside that cell, but cannot touch the original money source.
+              </p>
+            </div>
+            <div class="story-card">
+              <h3>Why this matters</h3>
+              <p>
+                This is the missing layer between ordinary payment APIs and autonomous agents:
+                spend authority that is minted, bounded, explainable, and independently verifiable.
+              </p>
+            </div>
+          </div>
+
+          <div class="value-grid" id="valueGrid">
+            <div class="value-card">
+              <span>Before</span>
+              <strong>Unsafe money exposure</strong>
+              <p>Builders usually hand an agent a payment key, card, or one-off approval hack.</p>
+            </div>
+            <div class="value-card">
+              <span>During</span>
+              <strong>Spend Cell minted</strong>
+              <p>The runtime creates a Spend Mandate, Spend Cell, spend key, and Spend Intent for this one job.</p>
+            </div>
+            <div class="value-card">
+              <span>After</span>
+              <strong>Spend Trace attached</strong>
+              <p>The payment result includes portable evidence that another system can verify.</p>
+            </div>
+          </div>
+
+          <div class="evidence-header">
+            <h3>Technical evidence</h3>
+            <p>
+              These artifacts are what a developer, auditor, counterparty, or verifier would inspect.
+              Customers should understand the story above first; the JSON proves the story is real.
+            </p>
+          </div>
+
+          <div class="cards" id="cards"></div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const runButton = document.getElementById("runButton");
+      const cards = document.getElementById("cards");
+      const summary = document.getElementById("summary");
+      const verdict = document.getElementById("verdict");
+      const mandateChecks = document.getElementById("mandateChecks");
+      const steps = Array.from(document.querySelectorAll(".step"));
+      const allowedCategories = new Set(["api", "data"]);
+      const maxSpend = 20;
+      const approvalThreshold = 10;
+
+      function setStepState(activeIndex) {
+        steps.forEach((step, index) => {
+          step.classList.toggle("active", index === activeIndex);
+          step.classList.toggle("done", index < activeIndex);
+        });
+      }
+
+      function renderArtifact(title, value) {
+        const article = document.createElement("article");
+        article.className = "artifact";
+        article.innerHTML = "<h3></h3><pre></pre>";
+        article.querySelector("h3").textContent = title;
+        article.querySelector("pre").textContent = JSON.stringify(value, null, 2);
+        return article;
+      }
+
+      function renderStory(result) {
+        const amount = result.paymentIntent?.amount ?? "the requested amount";
+        const currency = result.paymentIntent?.currency ?? "USD";
+        const category = result.paymentIntent?.category ?? "digital resource";
+        const agentId = result.paymentIntent?.agentId ?? document.getElementById("agentId").value;
+        const walletId = result.sessionWallet?.id ?? "Spend Cell";
+        const policyId = result.compiledPolicy?.id ?? "Spend Mandate";
+        const proofId = result.spendProof?.id ?? "Spend Trace";
+        const verified = result.apip?.verificationResult?.valid === true;
+
+        document.getElementById("story").innerHTML = `
+          <div class="story-card">
+            <h3>Business story: what just happened?</h3>
+            <ul class="story-list">
+              <li><b>1</b><div><strong>The Source Vault stayed sealed.</strong><span>The owner did not expose their primary money source. They minted a Spend Mandate: spend only within the approved financial boundary.</span></div></li>
+              <li><b>2</b><div><strong>The agent received a Spend Cell.</strong><span>${agentId} was issued ${walletId}, a limited cell for this job only.</span></div></li>
+              <li><b>3</b><div><strong>The agent created a Spend Intent.</strong><span>It tried to spend ${amount} ${currency} for category "${category}". The runtime checked that intent against ${policyId}.</span></div></li>
+              <li><b>4</b><div><strong>The system attached a Spend Trace.</strong><span>${proofId} explains who minted the spend authority, which cell was used, and why the request was valid.</span></div></li>
+            </ul>
+          </div>
+          <div class="story-card">
+            <h3>Customer takeaway</h3>
+            <p>
+              Your agent can now buy something useful without ever seeing your primary money source.
+              If another agent, vendor, finance team, or auditor asks "why was this spend allowed?",
+              the answer is attached to the transaction as a verifiable Spend Trace.
+            </p>
+          </div>
+        `;
+
+        document.getElementById("valueGrid").innerHTML = `
+          <div class="value-card">
+            <span>Safety</span>
+            <strong>Source Vault stayed isolated</strong>
+            <p>The agent only touched a Spend Cell, not the human's card, bank account, or master payment key.</p>
+          </div>
+          <div class="value-card">
+            <span>Control</span>
+            <strong>Spend Mandate checked first</strong>
+            <p>The runtime evaluated amount, category, cell, and authority before approving the Spend Intent.</p>
+          </div>
+          <div class="value-card">
+            <span>Trust</span>
+            <strong>${verified ? "APIP verification passed" : "APIP verification needs review"}</strong>
+            <p>The result is not just "payment succeeded"; it includes machine-readable evidence of minted spend authority.</p>
+          </div>
+        `;
+      }
+
+      function getMandateDecision() {
+        const amount = Number.parseFloat(document.getElementById("spendAmount").value);
+        const category = document.getElementById("category").value.trim().toLowerCase();
+        const amountKnown = Number.isFinite(amount);
+        const categoryAllowed = allowedCategories.has(category);
+        const amountWithinCap = amountKnown && amount <= maxSpend;
+        const needsApproval = amountKnown && amount > approvalThreshold && amount <= maxSpend;
+
+        if (!amountKnown) {
+          return {
+            type: "blocked",
+            title: "Blocked",
+            reason: "Spend amount must be a valid number before the agent can create a Spend Intent.",
+            amountLabel: "Invalid amount",
+            approvalLabel: "Cannot evaluate",
+            categoryLabel: category || "Missing category",
+            traceLabel: "No Spend Trace"
+          };
+        }
+
+        if (!amountWithinCap) {
+          return {
+            type: "blocked",
+            title: "Blocked",
+            reason: `The Spend Intent asks for ${amount.toFixed(2)} USD, which exceeds the 20 USD Spend Cell boundary.`,
+            amountLabel: "Fails max 20 USD",
+            approvalLabel: "Not eligible",
+            categoryLabel: categoryAllowed ? "Allowed category" : "Category not allowed",
+            traceLabel: "Blocked trace"
+          };
+        }
+
+        if (!categoryAllowed) {
+          return {
+            type: "blocked",
+            title: "Blocked",
+            reason: `The category "${category || "blank"}" is outside the Spend Mandate. Only api and data are allowed.`,
+            amountLabel: "Within max 20 USD",
+            approvalLabel: needsApproval ? "Would need approval" : "No approval needed",
+            categoryLabel: "Category not allowed",
+            traceLabel: "Blocked trace"
+          };
+        }
+
+        if (needsApproval) {
+          return {
+            type: "approval",
+            title: "Needs Approval",
+            reason: `The Spend Intent is within the Spend Cell, but ${amount.toFixed(2)} USD crosses the 10 USD approval gate.`,
+            amountLabel: "Within max 20 USD",
+            approvalLabel: "Approval required",
+            categoryLabel: "Allowed category",
+            traceLabel: "Approval trace"
+          };
+        }
+
+        return {
+          type: "auto",
+          title: "Auto-approved",
+          reason: `The Spend Intent fits the Spend Mandate: amount is under 10 USD and category "${category}" is allowed.`,
+          amountLabel: "Within max 20 USD",
+          approvalLabel: "No approval needed",
+          categoryLabel: "Allowed category",
+          traceLabel: "Approved trace"
+        };
+      }
+
+      function renderMandateDecision() {
+        const decision = getMandateDecision();
+        verdict.className = `verdict ${decision.type}`;
+        verdict.innerHTML = `
+          <span>Mandate decision</span>
+          <strong>${decision.title}</strong>
+          <p>${decision.reason}</p>
+        `;
+
+        const checkClass = {
+          auto: "pass",
+          approval: "warn",
+          blocked: "fail"
+        }[decision.type];
+
+        mandateChecks.innerHTML = `
+          <div class="check ${decision.amountLabel.startsWith("Fails") || decision.amountLabel.startsWith("Invalid") ? "fail" : "pass"}"><span>Amount cap</span><strong>${decision.amountLabel}</strong></div>
+          <div class="check ${decision.approvalLabel.includes("required") ? "warn" : decision.approvalLabel.includes("eligible") || decision.approvalLabel.includes("Cannot") ? "fail" : "pass"}"><span>Approval gate</span><strong>${decision.approvalLabel}</strong></div>
+          <div class="check ${decision.categoryLabel.includes("not") || decision.categoryLabel.includes("Missing") ? "fail" : "pass"}"><span>Allowed categories</span><strong>${decision.categoryLabel}</strong></div>
+          <div class="check ${checkClass}"><span>Spend Trace</span><strong>${decision.traceLabel}</strong></div>
+        `;
+      }
+
+      function wait(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function animateRuntime() {
+        for (let i = 0; i < steps.length; i += 1) {
+          setStepState(i);
+          await wait(160);
+        }
+        setStepState(steps.length);
+      }
+
+      async function runDemo() {
+        runButton.disabled = true;
+        runButton.textContent = "Executing runtime...";
+        cards.innerHTML = "";
+        summary.classList.remove("error");
+        summary.innerHTML = "Compiling policy and preparing delegated spend artifacts...";
+        setStepState(0);
+
+        const payload = {
+          principalId: document.getElementById("principalId").value,
+          agentId: document.getElementById("agentId").value,
+          naturalLanguagePolicy: document.getElementById("policyText").value,
+          spendAmount: document.getElementById("spendAmount").value,
+          category: document.getElementById("category").value
+        };
+
+        try {
+          renderMandateDecision();
+          const animation = animateRuntime();
+          const response = await fetch("/v1/demo/first-wedge-flow", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorText}`);
+          }
+
+          const result = await response.json();
+          await animation;
+
+          summary.innerHTML =
+            "<strong>Runtime verified.</strong> The important point is not that a JSON object was created. The point is that a Source Vault stayed sealed, a Spend Cell was minted, and the system can prove why the spend was allowed.";
+
+          renderStory(result);
+
+          const artifactMap = [
+            ["Compiled Policy", result.compiledPolicy],
+            ["Session Wallet", result.sessionWallet],
+            ["Session Spend Key", {
+              id: result.sessionKey.id,
+              scopes: result.sessionKey.scopes,
+              expiresAt: result.sessionKey.expiresAt
+            }],
+            ["Payment Intent", result.paymentIntent],
+            ["Capability Proof", result.capabilityProof],
+            ["Spend Proof", result.spendProof],
+            ["Execution Receipt", result.executionReceipt],
+            ["APIP Verification", result.apip.verificationResult]
+          ];
+
+          for (const [title, value] of artifactMap) {
+            cards.appendChild(renderArtifact(title, value));
+          }
+        } catch (error) {
+          summary.classList.add("error");
+          summary.innerHTML =
+            "<strong>Demo failed to run.</strong> Load this page through the running app at <code>/v1/demo/first-wedge-page</code>, then make sure the backend server is up. " +
+            "<br><br>" +
+            (error && error.message ? error.message : "Unknown error");
+          console.error(error);
+        } finally {
+          runButton.disabled = false;
+          runButton.textContent = "Mint Spend Cell and run spend";
+        }
+      }
+
+      runButton.addEventListener("click", runDemo);
+      document.getElementById("spendAmount").addEventListener("input", renderMandateDecision);
+      document.getElementById("category").addEventListener("input", renderMandateDecision);
+      renderMandateDecision();
+      runDemo();
+    </script>
+  </body>
+</html>

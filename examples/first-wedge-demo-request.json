@@ -1,0 +1,7 @@
+{
+  "principalId": "pr_demo_founder",
+  "agentId": "ag_research_assistant",
+  "naturalLanguagePolicy": "Allow this research agent to spend up to 20 USD on API and data purchases, and require approval for anything above 10 USD.",
+  "spendAmount": "12.50",
+  "category": "api"
+}

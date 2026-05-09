@@ -1,0 +1,109 @@
+{
+  "narrative": {
+    "wedge": "Agents buying APIs, data, and digital tools under bounded budgets",
+    "value": "Give agents bounded spending power without exposing primary payment credentials"
+  },
+  "setup": {
+    "principalId": "pr_demo_founder",
+    "agentId": "ag_research_assistant",
+    "treasuryWallet": {
+      "id": "wa_demo_treasury",
+      "type": "treasury"
+    },
+    "policyWallet": {
+      "id": "wa_demo_policy",
+      "type": "policy"
+    },
+    "budgetGrant": {
+      "id": "bg_demo_001",
+      "sourceWalletId": "wa_demo_treasury",
+      "targetWalletId": "wa_demo_session",
+      "amountLimit": "20.00"
+    }
+  },
+  "compiledPolicy": {
+    "compilerVersion": "v0.1",
+    "sourceType": "natural_language",
+    "normalizedRules": {
+      "allowedCategories": ["api", "data"],
+      "limits": {
+        "perTransaction": "20"
+      },
+      "approvalRules": {
+        "requiresHumanApprovalOver": "20"
+      }
+    },
+    "explanation": [
+      "Detected API-only spend intent.",
+      "Detected data spend permission.",
+      "Detected per-transaction limit of 20 USD.",
+      "Detected manual approval requirement."
+    ]
+  },
+  "sessionWallet": {
+    "id": "wa_demo_session",
+    "principalId": "pr_demo_founder",
+    "agentId": "ag_research_assistant",
+    "walletType": "session",
+    "currency": "USD",
+    "availableBalance": "20.00",
+    "status": "active",
+    "purpose": "Research session for premium search and dataset access",
+    "spendingLimit": "20.00"
+  },
+  "sessionKey": {
+    "id": "skey_demo_001",
+    "walletId": "wa_demo_session",
+    "principalId": "pr_demo_founder",
+    "agentId": "ag_research_assistant",
+    "scopes": ["payments:create", "payments:submit", "proofs:generate"],
+    "status": "active",
+    "publicKeyPem": "[redacted demo public key]"
+  },
+  "paymentIntent": {
+    "id": "pi_demo_001",
+    "principalId": "pr_demo_founder",
+    "agentId": "ag_research_assistant",
+    "walletId": "wa_demo_session",
+    "executionContextId": "ctx_demo_001",
+    "amount": "12.50",
+    "currency": "USD",
+    "purpose": "Buy premium search results and a research dataset",
+    "category": "api",
+    "status": "needs_approval",
+    "matchedPolicyIds": ["pol_demo_001"],
+    "budgetGrantId": "bg_demo_001",
+    "reasonCodes": ["manual_approval_required", "within_budget_grant"]
+  },
+  "capabilityProof": {
+    "proofId": "cproof_demo_001",
+    "graphId": "cg_demo_001",
+    "graphHash": "[redacted hash]",
+    "delegationChainHash": "[redacted hash]",
+    "summary": "Principal pr_demo_founder delegated spend authority to agent ag_research_assistant"
+  },
+  "spendProof": {
+    "proofId": "sproof_demo_001",
+    "paymentIntentId": "pi_demo_001",
+    "paymentIntentHash": "[redacted hash]",
+    "contextHash": "[redacted hash]",
+    "capabilityProofId": "cproof_demo_001",
+    "capabilityGraphHash": "[redacted hash]",
+    "approvalId": "apr_demo_001",
+    "sessionKeyId": "skey_demo_001",
+    "decisionSummary": "Payment intent pi_demo_001 was evaluated with status needs_approval"
+  },
+  "executionReceipt": {
+    "receiptId": "rcpt_demo_001",
+    "paymentIntentId": "pi_demo_001",
+    "status": "needs_approval",
+    "settled": false,
+    "spendProofId": "sproof_demo_001",
+    "receiptHash": "[redacted hash]"
+  },
+  "apip": {
+    "verificationResult": {
+      "valid": true
+    }
+  }
+}
