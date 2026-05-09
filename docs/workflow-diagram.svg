@@ -1,0 +1,92 @@
+<svg width="1600" height="820" viewBox="0 0 1600 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="220" y1="40" x2="1380" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111A"/>
+      <stop offset="1" stop-color="#0B1824"/>
+    </linearGradient>
+    <linearGradient id="cyanGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#57ECFF"/>
+      <stop offset="1" stop-color="#73FFBA"/>
+    </linearGradient>
+    <linearGradient id="blueGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#7A9FFF"/>
+      <stop offset="1" stop-color="#57ECFF"/>
+    </linearGradient>
+    <style>
+      .title { fill: #EEF8FF; font: 700 40px 'Segoe UI', Arial, sans-serif; }
+      .subtitle { fill: #91A8BC; font: 500 18px 'Segoe UI', Arial, sans-serif; }
+      .stepTitle { fill: #EEF8FF; font: 700 24px 'Segoe UI', Arial, sans-serif; }
+      .stepText { fill: #CAD9E8; font: 500 16px 'Segoe UI', Arial, sans-serif; }
+      .label { fill: #57ECFF; font: 700 14px 'Segoe UI', Arial, sans-serif; letter-spacing: 1px; text-transform: uppercase; }
+      .small { fill: #91A8BC; font: 500 14px 'Segoe UI', Arial, sans-serif; }
+      .pill { fill: #031018; font: 700 13px 'Segoe UI', Arial, sans-serif; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="820" rx="32" fill="url(#bg)"/>
+  <circle cx="220" cy="130" r="160" fill="#57ECFF" opacity="0.09"/>
+  <circle cx="1360" cy="120" r="170" fill="#7A9FFF" opacity="0.09"/>
+  <circle cx="1320" cy="700" r="180" fill="#73FFBA" opacity="0.07"/>
+
+  <text x="84" y="86" class="title">CashCat Workflow</text>
+  <text x="84" y="118" class="subtitle">From user task to governed spend to visible business artifact</text>
+
+  <rect x="84" y="190" width="260" height="210" rx="28" fill="#0E1A2A" stroke="#7A9FFF" stroke-opacity="0.35"/>
+  <text x="114" y="230" class="label">Step 1</text>
+  <text x="114" y="268" class="stepTitle">User Task</text>
+  <text x="114" y="302" class="stepText">A human gives one top-level business task through the CashCat interface.</text>
+  <text x="114" y="340" class="small">Examples:</text>
+  <text x="114" y="366" class="small">• market research</text>
+  <text x="114" y="390" class="small">• launch operations</text>
+
+  <rect x="394" y="190" width="290" height="210" rx="28" fill="#0E1A2A" stroke="#57ECFF" stroke-opacity="0.35"/>
+  <text x="424" y="230" class="label">Step 2</text>
+  <text x="424" y="268" class="stepTitle">AI Planner</text>
+  <text x="424" y="302" class="stepText">Qwen2.5-14B-Instruct on AMD decides whether paid resources are needed.</text>
+  <text x="424" y="340" class="small">Outputs:</text>
+  <text x="424" y="366" class="small">• vendor</text>
+  <text x="424" y="390" class="small">• amount</text>
+  <text x="424" y="414" class="small">• category</text>
+  <text x="424" y="438" class="small">• confidence + reasoning</text>
+
+  <rect x="734" y="190" width="320" height="210" rx="28" fill="#0E1A2A" stroke="#73FFBA" stroke-opacity="0.35"/>
+  <text x="764" y="230" class="label">Step 3</text>
+  <text x="764" y="268" class="stepTitle">Governed Spend</text>
+  <text x="764" y="302" class="stepText">CashCat checks budget, approval threshold, and spend permissions before accepting action.</text>
+  <text x="764" y="340" class="small">Artifacts:</text>
+  <text x="764" y="366" class="small">• payment intent</text>
+  <text x="764" y="390" class="small">• spend proof</text>
+  <text x="764" y="414" class="small">• execution receipt</text>
+
+  <rect x="1104" y="190" width="410" height="210" rx="28" fill="#0E1A2A" stroke="#FFD166" stroke-opacity="0.35"/>
+  <text x="1134" y="230" class="label">Step 4</text>
+  <text x="1134" y="268" class="stepTitle">Workflow Artifact</text>
+  <text x="1134" y="302" class="stepText">The system returns a useful result, not only a financial event.</text>
+  <text x="1134" y="340" class="small">Examples:</text>
+  <text x="1134" y="366" class="small">• research brief</text>
+  <text x="1134" y="390" class="small">• benchmark result</text>
+  <text x="1134" y="414" class="small">• operations bundle</text>
+
+  <path d="M344 295H374" stroke="#57ECFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M366 285L394 295L366 305" stroke="#57ECFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M684 295H714" stroke="#57ECFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M706 285L734 295L706 305" stroke="#57ECFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M1054 295H1084" stroke="#57ECFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1076 285L1104 295L1076 305" stroke="#57ECFF" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="84" y="486" width="1430" height="230" rx="30" fill="#0E1A2A" stroke="#57ECFF" stroke-opacity="0.22"/>
+  <text x="114" y="528" class="label">Execution Modes</text>
+  <text x="114" y="566" class="stepTitle">Single Agent or Multi-Agent Orchestration</text>
+  <text x="114" y="602" class="stepText">Simple tasks stay in one lane. Broader tasks activate a coordinator that delegates budgets and permissions to specialist agents.</text>
+
+  <rect x="116" y="632" width="220" height="44" rx="22" fill="url(#blueGlow)"/>
+  <text x="173" y="660" class="pill">Single agent run</text>
+  <rect x="364" y="632" width="240" height="44" rx="22" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="406" y="660" class="small">Coordinator</text>
+  <rect x="632" y="632" width="240" height="44" rx="22" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="661" y="660" class="small">Market Intelligence Agent</text>
+  <rect x="900" y="632" width="240" height="44" rx="22" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="932" y="660" class="small">Tooling Procurement Agent</text>
+  <rect x="1168" y="632" width="240" height="44" rx="22" fill="#1A2940" stroke="#57ECFF" stroke-opacity="0.32"/>
+  <text x="1206" y="660" class="small">Compute Operations Agent</text>
+</svg>

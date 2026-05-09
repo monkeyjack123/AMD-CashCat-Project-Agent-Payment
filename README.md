@@ -4,6 +4,14 @@ CashCat is a public-safe hackathon repository for an AI agent payments product d
 
 This repository contains only submission-safe materials for the hackathon.
 
+## Architecture
+
+![CashCat Architecture](./docs/architecture-diagram.svg)
+
+## Workflow
+
+![CashCat Workflow](./docs/workflow-diagram.svg)
+
 ## Rights
 
 - Copyright: CashCat project authors
@@ -23,7 +31,6 @@ This repository contains only submission-safe materials for the hackathon.
 - A proof page with payment intent, receipt, spend proof, and workflow artifacts
 - AI architecture, schemas, and example input/output chains
 - Submission-safe examples, docs, and selected source excerpts
-- The current slide deck used for the presentation
 
 ## What The Demo Shows
 
@@ -49,6 +56,7 @@ This repository contains only submission-safe materials for the hackathon.
 ## Supporting Materials
 
 - [docs/ARCHITECTURE_OVERVIEW.md](./docs/ARCHITECTURE_OVERVIEW.md): visual architecture diagram and system summary
+- [docs/workflow-diagram.svg](./docs/workflow-diagram.svg): end-to-end workflow diagram
 - [docs/AI_ARCHITECTURE.md](./docs/AI_ARCHITECTURE.md): task, planner, governance, and orchestration design
 - [docs/DEPLOYMENT.md](./docs/DEPLOYMENT.md): GitHub Pages + public API deployment model
 - [docs/first-wedge-demo-flow.md](./docs/first-wedge-demo-flow.md): public-safe walkthrough of the first wedge
@@ -69,7 +77,6 @@ This repository contains only submission-safe materials for the hackathon.
 - [showcase/AI_RUNTIME_DESIGN.md](./showcase/AI_RUNTIME_DESIGN.md): public-safe AI runtime design notes
 - [showcase/pseudocode/agent-planner-schema.ts](./showcase/pseudocode/agent-planner-schema.ts): planner prompt and output shape
 - [showcase/pseudocode/orchestration-decision.ts](./showcase/pseudocode/orchestration-decision.ts): single-agent vs orchestration routing logic
-- [CashCat-AMD-Track1-Deck.pptx](./CashCat-AMD-Track1-Deck.pptx): current presentation deck
 - [LICENSE](./LICENSE): repository rights statement
 - [NOTICE.md](./NOTICE.md): plain-language usage notice
 
