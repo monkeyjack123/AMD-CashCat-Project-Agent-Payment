@@ -1,8 +1,38 @@
-# AMD-CashCat-Project-Agent-Payment
+# CashCat
 
-CashCat is a public-safe hackathon repository for an AI agent payments product demo designed for the AMD Developer Challenge.
+CashCat is an **AI Agent Payment OS** for automating and governing economic actions by AI agents.
 
-This repository contains only submission-safe materials for the hackathon.
+Agents can request paid resources such as APIs, data, software, compute, and services. CashCat turns those requests into bounded payment workflows with budgets, approvals, payment intents, receipts, spend proofs, and audit trails.
+
+This repository is a public-safe project repo for hackathon and build-week review. It contains the product demo, architecture, workflow diagrams, schemas, examples, and selected implementation excerpts without production credentials or private commercialization details.
+
+## OpenAI Build Week
+
+This version of CashCat is prepared for **OpenAI Build Week**.
+
+The project focuses on a practical question:
+
+> If AI agents are going to act for users and teams, how should they pay for things safely?
+
+CashCat's answer is to separate the AI's planning role from the financial authority layer:
+
+- The agent decides what paid resources are needed.
+- CashCat grants bounded authority, routes approvals, and records proof.
+- Existing payment rails such as Stripe, PayPal, cards, wallets, or crypto infrastructure can execute value movement underneath.
+
+## How Codex Helped
+
+OpenAI Codex was used as a build partner across the repository, especially for turning the idea into a reviewable product artifact.
+
+Codex helped with:
+
+- Product shaping: refined CashCat from a narrow API/data-purchase demo into an AI Agent Payment OS.
+- Frontend iteration: built and adjusted the public demo pages, task input flow, agent run timeline, proof display, and GitHub Pages deployment.
+- Architecture documentation: produced diagrams, workflow docs, AI runtime notes, schemas, and public-safe examples.
+- Repository hygiene: separated the public hackathon repo from the private local project, removed sensitive materials from the public repo, and added proprietary rights notices.
+- Presentation support: generated slide assets, Q&A prep material, and OpenAI Build Week versions of the deck imagery.
+
+Codex was not used as a replacement for product judgment. It acted as an implementation and documentation accelerator while the core product direction remained focused on safe agent payments, automation, and financial control.
 
 ## Architecture
 
@@ -20,8 +50,8 @@ This repository contains only submission-safe materials for the hackathon.
 
 ## Track
 
-- AMD Developer Challenge
-- Track 1: AI Agents & Agentic Workflows
+- OpenAI Build Week
+- AI Agents & Agentic Workflows
 
 ## What This Public Repo Includes
 
@@ -45,6 +75,16 @@ This repository contains only submission-safe materials for the hackathon.
 - Provider: `AMD vLLM endpoint`
 - Planner role: translate natural-language tasks into structured spend proposals
 - Control role: CashCat applies budget, approval, and spend-permission logic before producing governed artifacts
+
+## Product Shape
+
+CashCat is not just an API and not a payment processor.
+
+It has three product surfaces:
+
+- Web workspace: a ChatGPT-like task entry point where a user gives an agent a business task and reviews spend proposals, approvals, receipts, and proofs.
+- Developer API: an integration layer for agent builders who want to call CashCat before an agent initiates a paid action.
+- Enterprise control console: a management layer for budgets, permissions, approvals, policy controls, audit trails, and payment rail configuration.
 
 ## Public Site Entry Points
 
